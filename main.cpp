@@ -9,7 +9,8 @@ int main()
     s.bfs(1, 5);
     std::cout<<"\n-----------------\nDijkstra :"<<std::endl;
     s.resetAttributs();
-    //s.dijkstra(31, 35);
     s.aretes();
+    //s.dijkstra(31, 35);
+
     return 0;
 }

@@ -10,6 +10,8 @@ Trajet::Trajet(int num, std::string nom, std::string type, int depart, int arriv
     else if(type=="B") m_poids = 4 * (delta/100);
     else if(type=="R") m_poids = 3 * (delta/100);
     else if(type=="N") m_poids = 2 * (delta/100);
+    else if(type=="KL") m_poids = 1/6 * (delta/100);
+    else if(type=="SURF") m_poids = 10 * (delta/100);
 
     else if(type=="TPH") m_poids = 4 + 2 * (delta/100);
     else if(type=="TC") m_poids = 2 + 3 * (delta/100);
