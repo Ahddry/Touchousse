@@ -2,8 +2,6 @@
 #define STATION_H_INCLUDED
 
 #include "Point.h"
-#include <vector>
-#include <string>
 #include <set>
 
 class Station
@@ -16,8 +14,11 @@ public:
     Station(std::string fichier);    //Constructeur du graphe prenant le chemin du fichier txt contenant le graphe en paramètres
     ~Station();
     int getOrdre() const;           //Getter pour l'ordre du graphe
-    void dijkstra(int depart, int arrivee);//Algorithme de Dijkstra pour déterminer le plus court chemin entre deux points précisés
+    void bfs(int depart, int arrivee);      //Algorithme du BFS pour découverte des chemins d'un point à un autre
+    void dijkstra(int depart, int arrivee); //Algorithme de Dijkstra pour déterminer le plus court chemin entre deux points précisés
     void afficher() const;      //Affichage du gaphe
+    void resetAttributs();
+    void aretes();
 
 };
 

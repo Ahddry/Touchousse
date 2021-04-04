@@ -3,30 +3,37 @@
 #include "Trajet.h"
 #include <vector>
 
-
 class Point
 {
 private:
     int m_num;      //Numéro du point
     std::vector<Trajet> m_antecedant;//arcs reliant le point à ses antécédants
     std::vector<Trajet> m_suivant;//arcs reliant le point à ses suivants
+    std::string m_lieu; //Nom du point
+    int m_altitude; //Altitude du point
     int m_couleur;  //couleur attribuée au point
-    int m_distance; //Distance du point de départ
+
+    double m_distance; //Distance du point de départ
     int m_anteDijk; //antécédant par recherche du chemin le plus court
+    int m_anteBfs;  //antécédant par recherche des chemins BFS
 public:
-    Point(int num);
+    Point(int num, std::string nom, int alt);
     ~Point();
-    int getNum() const;//Getter du numéro du point
+    int getNum() const;         //Getter du numéro du point
+    std::string getLieu() const;        //Getter du nom du point
+    int getAlt() const;         //Getter de l'altitude du point
     void ajoutAnte(Trajet ante);//Ajout d'un arc comme antécédant
     void ajoutSuiv(Trajet suiv);//Ajout d'un arc comme suivant
     std::vector<Trajet> getAnte() const;//Récupération de tous les arcs précédentes
     std::vector<Trajet> getSuiv() const;//Récupération de tous les arcs suivantes
     void setCouleur(int coul);  //Attribution d'une couleur
     int getCouleur() const;     //Récupération de la couleur actuelle
-    void setDistance(int coul); //Attribution d'une distance au point initial
-    int getDistance() const;    //Récupération de la distance au point initial
-    void setDijk(int Dijk);     //Attribution d'un antécédent par recherche du chemin le plus court
+    void setDistance(double dist); //Attribution d'une distance au point initial
+    double getDistance() const;    //Récupération de la distance au point initial
+    void setDijk(int dijk);     //Attribution d'un antécédent par recherche du chemin le plus court
     int getDijk() const;        //Récupération de l'antécédent par recherche du chemin le plus court
+    void setBfs(int bfs);       //Attribution d'un antécédent par recherche des chemins BFS
+    int getBfs() const;         //Récupération de l'antécédent par recherche des chemins BFS
     void afficher() const;      //Affichage du point et de ses connexions
 };
 

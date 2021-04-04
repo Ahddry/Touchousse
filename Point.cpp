@@ -2,11 +2,12 @@
 #include <climits>
 #include <iostream>
 
-Point::Point(int num) : m_num(num)
+Point::Point(int num, std::string nom, int alt) : m_num(num), m_lieu(nom), m_altitude(alt)
 {
     m_distance = INT_MAX;   //Initialisation de la distance comme étant maximale (infinie) au point de départ
     m_couleur = 0;          //Mise à l'état 0 de la couleur
     m_anteDijk = -1;        //Mise à -1 (aucun) de l'antécédant
+    m_anteBfs = -1;        //Mise à -1 (aucun) de l'antécédant
 }
 
 Point::~Point(){}
@@ -15,6 +16,17 @@ int Point::getNum() const
 {
     return m_num;       //Getter du numéro du point
 }
+
+std::string Point::getLieu() const
+{
+    return m_lieu;       //Getter du nom du point
+}
+
+int Point::getAlt() const
+{
+    return m_altitude;  //Getter de l'altitude du point
+}
+
 
 void Point::ajoutAnte(Trajet ante)
 {
@@ -56,12 +68,12 @@ int Point::getCouleur() const//Récupération de la couleur actuelle
     return m_couleur;
 }
 
-void Point::setDistance(int dist)//Attribution d'une distance au point initial
+void Point::setDistance(double dist)//Attribution d'une distance au point initial
 {
     m_distance = dist;
 }
 
-int Point::getDistance() const//Récupération de la distance au point initial
+double Point::getDistance() const//Récupération de la distance au point initial
 {
     return m_distance;
 }
@@ -76,11 +88,26 @@ int Point::getDijk() const//Récupération de l'antécédent par recherche du chemin
     return m_anteDijk;
 }
 
+void Point::setBfs(int bfs)       //Attribution d'un antécédent par recherche des chemins BFS
+{
+    m_anteBfs = bfs;
+}
+
+int Point::getBfs() const         //Récupération de l'antécédent par recherche des chemins BFS
+{
+    return m_anteBfs;
+}
+
 void Point::afficher() const//Affichage du point et de ses connexions
 {
-    std::cout<<"Point "<<m_num<<" : \n"<<"Antecedants : ";
-    for(const auto& elem: m_antecedant) std::cout<<elem.getDepart()<<" ";
+    /*
+    int a = atoi(m_lieu.c_str());
+    if(a==0) std::cout<<m_lieu<<" : "<<std::endl;
+    else std::cout<<"Point "<<m_num<<" : "<<std::endl;
+    std::cout<<"Antecedants : ";
+    for(const auto& elem: m_antecedant) std::cout<<elem.getDepart()<<" : "<<;
     std::cout<<"\nSuivants : ";
     for(const auto& elem: m_suivant) std::cout<<elem.getArrivee()<<" ";
     std::cout<<std::endl<<std::endl;
+    */
 }
