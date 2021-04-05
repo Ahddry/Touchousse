@@ -98,6 +98,7 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     }
     m_points[depart].setDistance(0);       //Le point de départ a une distance de 0
     m_points[depart].setCouleur(1);        //et est marqué comme repéré
+    m_points[0].setCouleur(2);             //on met le points 0 qui est fictif à 2
     bool fin = false;
     do
     {
