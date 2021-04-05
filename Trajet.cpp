@@ -1,6 +1,5 @@
 #include "Trajet.h"
 
-
 Trajet::Trajet(int num, std::string nom, std::string type, int depart, int arrivee, int altDe, int altAr)
 : m_numero(num), m_nom(nom), m_type(type), m_depart(depart), m_arrivee(arrivee), m_altDepart(altDe), m_altArrivee(altAr)
 {

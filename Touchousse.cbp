@@ -32,6 +32,12 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add library="loadpng" />
+			<Add library="png16.dll" />
+			<Add library="jpgalleg" />
+			<Add library="alleg44.dll" />
+		</Linker>
 		<Unit filename="Plan_Pistes.cpp" />
 		<Unit filename="Plan_Pistes.h" />
 		<Unit filename="Point.cpp" />

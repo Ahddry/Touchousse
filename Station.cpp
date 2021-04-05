@@ -2,20 +2,23 @@
 #include <queue>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <utility>
 
-Station::Station(std::string fichier)
+Station::Station(Plan_Pistes p) : m_plan(p)
 {
+    std::string fichier = "data_arcs.txt";
     std::ifstream ifs{fichier};         //Lecture du fichier
     if (!ifs)
         throw std::runtime_error( "Impossible d'ouvrir en lecture " + fichier );
-    m_points.push_back(Point(0, "FakeNum0", 0));
+    m_points.push_back(Point(0, "FakeNum0", 0, -815, -815));
     ifs >> m_ordre;                     //Lecture du nombre de points
     for(int i=0; i<m_ordre;i++)         //Création des points
     {
-        int n, alt;
+        int n, alt, x, y;
         std::string lieu;
-        ifs>>n>>lieu>>alt;
-        m_points.push_back(Point(n, lieu, alt));
+        ifs>>n>>lieu>>alt>>x>>y;
+        m_points.push_back(Point(n, lieu, alt, x, y));
     }
     ifs >> m_taille;                    //Lecture du nombre de trajets existants
     for(int i=0; i<m_taille; i++)       //Creation des arcs
@@ -26,6 +29,7 @@ Station::Station(std::string fichier)
         Trajet trj(num, nom, type, d, a, m_points[d].getAlt(), m_points[a].getAlt());
         m_points[d].ajoutSuiv(trj);
         m_points[a].ajoutAnte(trj);
+        m_trajets.push_back(trj);
     }
 }
 
@@ -184,5 +188,55 @@ void Station::aretes()
         {
             std::cout<<traj.getNum()<<"\t"<<traj.getNom()<<"\t"<<traj.getType()<<"\t"<<traj.getDepart()<<"\t"<<traj.getArrivee()<<"\t|"<<traj.getPoids()<<std::endl;
         }
+    }
+}
+
+
+class Comparaison
+{
+public:
+    int operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
+    {
+        if(t1.getArrivee()==t2.getArrivee())
+            return t1.getDepart() > t2.getDepart(); //En cas de même poids, tri par ordre croissant du nombre de départ
+        return t1.getArrivee() > t2.getArrivee();       //Comparaison du poids d'une arête à celui d'une autre
+    }
+};
+
+void Station::graphique()
+{
+
+    for(auto& elem:m_points)
+    {
+        m_plan.point(elem);
+    }
+    std::vector<std::pair<int,int>> arrivees;
+    for(const auto &elem:m_points)
+    {
+        std::vector<Trajet> traj = elem.getSuiv();
+
+        std::priority_queue<Trajet, std::vector<Trajet>, Comparaison> file; //File de priorité des arêtes pondérées, triées par ordre croissant de point d'arrivée
+        for(const auto& trajets: traj)
+        {
+            file.push(trajets);
+        }
+        while(!file.empty())
+        {
+            int compteur = 0;
+            Trajet t = file.top();
+            std::pair<int, int> connex = {t.getDepart(), t.getArrivee()};
+            for(const auto& point:arrivees)
+            {
+                if(connex.first == point.first && connex.second==point.second) compteur++;
+                if(connex.first == point.second && connex.second==point.first) compteur++;
+            }
+            std::cout<<"Point "<<t.getDepart()<<"\tCompteur = "<<compteur<<std::endl;
+            m_plan.trajet(t, elem, m_points[t.getArrivee()], compteur);
+
+            compteur = 0;
+            arrivees.push_back(connex);
+            file.pop();
+        }
+
     }
 }

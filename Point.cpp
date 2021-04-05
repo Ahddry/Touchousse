@@ -2,7 +2,7 @@
 #include <climits>
 #include <iostream>
 
-Point::Point(int num, std::string nom, int alt) : m_num(num), m_lieu(nom), m_altitude(alt)
+Point::Point(int num, std::string nom, int alt, int x, int y) : m_num(num), m_lieu(nom), m_altitude(alt), m_X(x), m_Y(y)
 {
     m_distance = INT_MAX;   //Initialisation de la distance comme étant maximale (infinie) au point de départ
     m_couleur = 0;          //Mise à l'état 0 de la couleur
@@ -27,6 +27,15 @@ int Point::getAlt() const
     return m_altitude;  //Getter de l'altitude du point
 }
 
+int Point::x() const              //Getter pour la coordonée X du point pour l'affichage graphique
+{
+    return m_X;
+}
+
+int Point::y() const              //Getter pour la coordonée Y du point pour l'affichage graphique
+{
+    return m_Y;
+}
 
 void Point::ajoutAnte(Trajet ante)
 {
