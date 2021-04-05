@@ -12,11 +12,11 @@ int main(int argc, char *argv[])
     {
         fin = m.principal();
     }
-
+/*
     p.setup();
     Station s(p);
     s.afficher();
-    /*
+
     s.bfs(1, 5);
     std::cout<<"\n-----------------\nDijkstra :"<<std::endl;
     s.resetAttributs();
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     //s.dijkstra(31, 35);
     //p.setup();
     p.afficher();*/
-    p.standby();
+    //p.standby();
 
 
     return 0;

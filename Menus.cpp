@@ -20,7 +20,7 @@ bool Menus::principal()///Menu principal du jeu
         m_plan.effacer();
         m_plan.setup();
         Station s(m_plan);
-        s.graphique();
+        s.interactif();
         m_plan.standby();
         break;
     }

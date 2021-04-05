@@ -1,5 +1,6 @@
 #include "Plan_Pistes.h"
 #include "time.h"
+#include <ctime>
 #include "math.h"
 #include <iostream>
 
@@ -9,6 +10,7 @@
 #define NOIR makecol(0,0,0)
 
 #define ROUGE_DOUX makecol(255,50,50)
+#define SOUS_TITRE makecol(112,146,190)
 #define MONTAGNE makecol(200,210,220)
 
 
@@ -102,11 +104,42 @@ void Plan_Pistes::afficher()///affichages des éléments du buffer
     blit(m_plan, screen, 0,0, x, y, m_plan->w, m_plan->h);
 }
 
+void Plan_Pistes::descripPistes()
+{
+    std::vector<Trajet> traj;
+    traj.push_back(Trajet(0, "", "V", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "B", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "R", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "N", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "KL", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "SURF", 0, 0, 0, 0));
 
+    int x = SCREEN_W-275, y = 55;
+    for(const auto& elem:traj)
+    {
+        entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, false);
+        y+=30;
+    }
+    while(!traj.empty())
+    {
+        traj.pop_back();
+    }
+    traj.push_back(Trajet(0, "", "TPH", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "TC", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "TSD", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "TS", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "TK", 0, 0, 0, 0));
+    y = 700;
+    for(const auto& elem:traj)
+    {
+        entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, false);
+        y+=32;
+    }
+}
 
 void Plan_Pistes::point(Point p)            //affichage d'un point sur le buffer
 {
-    int x = p.x()+35, y = p.y()+40;
+    int x = p.x(), y = p.y();
     FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
     circle(m_plan, x, y, 25, NOIR);
     textout_centre_ex(m_plan, old, std::to_string(p.getNum()).c_str(), x, y-15, NOIR, -1);
@@ -123,18 +156,17 @@ void Plan_Pistes::trajet(Trajet t, Point depart, Point arrivee, int compteur)   
     else if(type=="N") couleur = NOIR;
     else if(type=="KL") couleur = makecol(255, 0, 255);
     else if(type=="SURF") couleur = makecol(0, 255, 255);
-    else if(type=="TPH") couleur = NOIR;
-    else if(type=="TC") couleur = NOIR;
+    else if(type=="TPH") couleur = makecol(0, 128, 25);
+    else if(type=="TC") couleur = makecol(165, 73, 164);
     else if(type=="TSD") couleur = NOIR;
     else if(type=="TS") couleur = makecol(255, 125, 0);
-    else if(type=="TK") couleur = NOIR;
+    else if(type=="TK") couleur = makecol(185, 122, 87);
     else if(type=="BUS") couleur = makecol(255, 255, 0);
 
-    //compteur *=7.5;
-    int x1 = depart.x()+35;
-    int y1 = depart.y()+40;
-    int x2 = arrivee.x()+35;
-    int y2 = arrivee.y()+40;
+    int x1 = depart.x();
+    int y1 = depart.y();
+    int x2 = arrivee.x();
+    int y2 = arrivee.y();
 
 
     int delta = 25;
@@ -152,7 +184,7 @@ void Plan_Pistes::trajet(Trajet t, Point depart, Point arrivee, int compteur)   
         trait(type, x1+polaireX1, y1-polaireY1, x2-polaireX2, y2-polaireY2, couleur);
     else if(x1<x2 && y1<y2)
         //line(m_plan, x1+delta-compteur, y1+delta-compteur, x2-delta-compteur, y2-delta-compteur, couleur);
-        trait(type, x1+polaireX1, y1+polaireY1, x2-polaireX2, y2-polaireY2, couleur);
+        trait(type, x1+polaireX1, y1-polaireY1, x2-polaireX2, y2+polaireY2, couleur);
     else if(x1>x2 && y1<y2)
         //line(m_plan, x1-delta+compteur, y1+delta+compteur, x2+delta+compteur, y2-delta+compteur, couleur);
         trait(type, x1-polaireX1, y1+polaireY1, x2+polaireX2, y2+polaireY2, couleur);
@@ -167,17 +199,7 @@ void Plan_Pistes::trait(std::string type, int x1, int y1, int x2, int y2, int co
         line(m_plan, x1, y1, x2, y2, couleur);
         rectfill(m_plan, x2-2, y2-2, x2+2, y2+2, couleur);
     }
-    else if(type=="TPH")
-    {
-        line(m_plan, x1, y1, x2, y2, couleur);
-        rectfill(m_plan, x2-2, y2-2, x2+2, y2+2, couleur);
-    }
-    else if(type=="TC")
-    {
-        line(m_plan, x1, y1, x2, y2, couleur);
-        rectfill(m_plan, x2-2, y2-2, x2+2, y2+2, couleur);
-    }
-    else if(type=="TSD"||type=="TS")
+    else if(type=="TSD"||type=="TS" || type=="TPH" || type=="TC" || type=="TK")
     {
         line(m_plan, x1, y1, x2, y2, couleur);
         for(int i=15; i>0;i--)
@@ -186,11 +208,135 @@ void Plan_Pistes::trait(std::string type, int x1, int y1, int x2, int y2, int co
         }
         rectfill(m_plan, x2-2, y2-2, x2+2, y2+2, makecol(0, 195, 195));
     }
-    else if(type=="TK")
+}
+
+
+Point Plan_Pistes::selecPoint(std::vector<Point> ensemble) const
+{
+    std::vector<std::pair<int, int>> coords;
+    for(const auto& elem:ensemble)
     {
-        line(m_plan, x1, y1, x2, y2, couleur);
-        rectfill(m_plan, x2-2, y2-2, x2+2, y2+2, couleur);
+        coords.push_back({elem.x(), elem.y()});
     }
+    //rect(m_plan, x-25, y-25, x+25, y+25, ROUGE);
+
+    int x = 0;
+    int y = 0;
+
+    int numero = 0;
+    bool clic = false, fin = false;
+    while(!fin)
+    {
+        clic = false;
+        while(!clic)
+        {
+            if(mouse_b&1)
+            {
+                x = mouse_x;
+                y = mouse_y;
+                clic = true;
+            }
+        }
+        for(unsigned int i = 0; i<coords.size(); i++)
+        {
+            if (x>=coords[i].first-25 && y>=coords[i].second-25 && x<=coords[i].first+25 && y<=coords[i].second+25)
+            {
+                numero = i;
+                rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
+                fin = true;
+                break;
+            }
+        }
+    }
+
+    return ensemble[numero];
+}
+
+void Plan_Pistes::infoPoint(Point point)
+{
+    FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
+    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
+    FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
+    effacer();
+    setup();
+    emphase("Informations sur le point", point.getLieu());
+    rest(1200);
+    setup();
+
+    //Titre centré
+    textout_centre_ex(m_plan, MiddleTitle,"Informations sur le point", SCREEN_W/2,40, ROUGE_DOUX,-1);
+    textout_centre_ex(m_plan, SubTitle,point.getLieu().c_str(), SCREEN_W/2,120, SOUS_TITRE,-1);
+
+    circle(m_plan, 125, 130, 50, NOIR);
+    textout_centre_ex(m_plan, MiddleTitle, std::to_string(point.getNum()).c_str(), 125, 90, NOIR, -1);
+
+    int x = 125;
+    int y = 250;
+    for(const auto& elem:point.getAnte())
+    {
+        entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true); ///TRIER LES ARETES SI YA LE TEMPS
+        std::string poids = std::to_string(elem.getPoids());
+        poids.erase(poids.find_last_not_of('0')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+        poids.erase(poids.find_last_not_of('.')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+        textout_ex(m_plan, old,(elem.getNom() + " : " + poids + "mins").c_str(), x+285, y-17, SOUS_TITRE,-1);
+        y+=75;
+    }
+    x = SCREEN_W-375;
+    y = 250;
+    for(const auto& elem:point.getSuiv())
+    {
+        entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true);
+        std::string poids = std::to_string(elem.getPoids());
+        poids.erase(poids.find_last_not_of('0')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+        poids.erase(poids.find_last_not_of('.')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+        textout_right_ex(m_plan, old,(poids + "mins : " + elem.getNom()).c_str(), x-35, y-17, SOUS_TITRE,-1);
+        y+=75;
+    }
+
+    afficher();
+}
+
+
+void Plan_Pistes::entreDeux(int depart, int arrivee, std::string type, int x, int y, bool point)
+{
+    FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
+    int couleur = 0;
+    if(type=="V") couleur = VERT;
+    else if(type=="B") couleur = BLEU;
+    else if(type=="R") couleur = ROUGE;
+    else if(type=="N") couleur = NOIR;
+    else if(type=="KL") couleur = makecol(255, 0, 255);
+    else if(type=="SURF") couleur = makecol(0, 255, 255);
+    else if(type=="TPH") couleur = makecol(0, 128, 25);
+    else if(type=="TC") couleur = makecol(165, 73, 164);
+    else if(type=="TSD") couleur = NOIR;
+    else if(type=="TS") couleur = makecol(255, 125, 0);
+    else if(type=="TK") couleur = couleur = makecol(185, 122, 87);
+    else if(type=="BUS") couleur = makecol(255, 255, 0);
+    std::string typeLong;
+
+    if(type=="V") typeLong = "Piste Verte";
+    else if(type=="B") typeLong = "Piste Bleue";
+    else if(type=="R") typeLong = "Piste Rouge";
+    else if(type=="N") typeLong = "Piste Noire";
+    else if(type=="KL") typeLong = "Piste de km lance";
+    else if(type=="SURF") typeLong = "Snow Park";
+    else if(type=="TPH") typeLong = "Telepherique";
+    else if(type=="TC") typeLong = "Tele-cabine";
+    else if(type=="TSD") typeLong = "TS Debrayable";
+    else if(type=="TS") typeLong = "Telesiege";
+    else if(type=="TK") typeLong = "Teleski";
+    else if(type=="BUS") typeLong = "BUS";
+
+    if(point)
+    {
+        circle(m_plan, x, y, 25, NOIR);
+        textout_centre_ex(m_plan, old, std::to_string(depart).c_str(), x, y-15, NOIR, -1);
+        circle(m_plan, x+250, y, 25, NOIR);
+        textout_centre_ex(m_plan, old, std::to_string(arrivee).c_str(), x+250, y-15, NOIR, -1);
+    }
+    trait(type, x+25, y, x+225, y, couleur);
+    textout_centre_ex(m_plan, old, typeLong.c_str(), x+125, y-35, couleur, -1);
 }
 
 
@@ -200,8 +346,8 @@ void Plan_Pistes::emphase(std::string titre, std::string sousTitre)
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
 
     // Texte centré
-    textout_centre_ex(m_plan, MiddleTitle,titre.c_str(), SCREEN_W/2,SCREEN_H/2-100, makecol(255,200,0),-1);
-    textout_centre_ex(m_plan, SubTitle,sousTitre.c_str(), SCREEN_W/2,SCREEN_H/2-20, makecol(0,170,250),-1);
+    textout_centre_ex(m_plan, MiddleTitle,titre.c_str(), SCREEN_W/2,SCREEN_H/2-100, ROUGE_DOUX,-1);
+    textout_centre_ex(m_plan, SubTitle,sousTitre.c_str(), SCREEN_W/2,SCREEN_H/2-20, SOUS_TITRE,-1);
 
     afficher();
 }

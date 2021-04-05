@@ -22,7 +22,8 @@ public:
     void afficher() const;      //Affichage du gaphe
     void resetAttributs();
     void aretes();
-    void graphique();
+    void interactif();
+
 
 };
 

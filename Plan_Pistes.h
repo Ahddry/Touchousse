@@ -27,9 +27,15 @@ public:
     std::vector<std::string> text(std::string str);//Méthode permettant de séparer une chaîne de charactères en 2 aux endroits comprenant un #, recyclée de notre projet du semestre dernier
     void afficher();        //affichages des éléments du buffer
 
+    void descripPistes();
+
     void point(Point p);            //affichage d'un point sur le buffer
     void trajet(Trajet t, Point depart, Point arrivee, int compteur);   //affichage d'un arc sur le buffer
     void trait(std::string type, int x1, int y1, int x2, int y2, int couleur); //Un trait sophistiqué
+
+    Point selecPoint(std::vector<Point> ensemble) const;
+    void infoPoint(Point point);
+    void entreDeux(int depart, int arrivee, std::string type, int x, int y, bool point);
 
     void emphase(std::string titre, std::string sousTitre);//Message accentué avec une première chose écrite en gros et une seconde en un peu plus petit en dessous
     int menu(std::string titre, std::vector<std::string> choix, int nbChoix);//menu divers avec choix paramétrables, attendant un clic de l'utilisateur sur une des options proposées

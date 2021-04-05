@@ -203,7 +203,7 @@ public:
     }
 };
 
-void Station::graphique()
+void Station::interactif()
 {
 
     for(auto& elem:m_points)
@@ -239,4 +239,10 @@ void Station::graphique()
         }
 
     }
+    std::cout<<"prout"<<std::endl;
+    m_plan.descripPistes();
+    m_plan.afficher();
+    Point selection = m_plan.selecPoint(m_points);
+    std::cout<< "Tu as clique sur le point "<<selection.getNum()<<std::endl;
+    m_plan.infoPoint(selection);
 }

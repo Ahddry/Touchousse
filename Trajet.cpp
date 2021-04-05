@@ -4,7 +4,7 @@ Trajet::Trajet(int num, std::string nom, std::string type, int depart, int arriv
 : m_numero(num), m_nom(nom), m_type(type), m_depart(depart), m_arrivee(arrivee), m_altDepart(altDe), m_altArrivee(altAr)
 {
     ///Calcul du temps de trajet :
-    int delta = m_altArrivee - m_altDepart;
+    double delta = m_altArrivee - m_altDepart;
     if(type=="V") m_poids = 5 * (delta/100);
     else if(type=="B") m_poids = 4 * (delta/100);
     else if(type=="R") m_poids = 3 * (delta/100);
