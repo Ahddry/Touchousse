@@ -17,6 +17,7 @@ bool Menus::principal()///Menu principal du jeu
     {
     case 1:
     {
+        ///Affichage du plan interactif
         m_plan.effacer();
         m_plan.setup();
         Station s(m_plan);

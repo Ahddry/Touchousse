@@ -102,7 +102,7 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     do
     {
         int numS = -1;                      //numéro de point
-        bool dist = INT_MAX;                 //Distance la plus courte au point de départ
+        int dist = INT_MAX;                 //Distance la plus courte au point de départ
         for(auto& elem:m_points)
         {
             if(elem.getCouleur()==1 && elem.getDistance()<dist) //Récupération du point non marqué comme finit avec la distance la plus courte au point de départ

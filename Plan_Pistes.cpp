@@ -565,8 +565,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+50 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+140)
         {
             choix = 1;//Lancer le jeu
-            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-450,SCREEN_H/4+60,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
-            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+300,SCREEN_H/4+60,SCREEN_W,SCREEN_H);
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+55,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+55,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
@@ -574,8 +574,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+145 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+225)
         {
             choix = 2;//Affichge des règles
-            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-450,SCREEN_H/4+155,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
-            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+300,SCREEN_H/4+155,SCREEN_W,SCREEN_H);
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+140,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+140,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
@@ -583,8 +583,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+230 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+310)
         {
             choix = 3;//Sous-menus de création de deck
-            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-450,SCREEN_H/4+240,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
-            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+300,SCREEN_H/4+240,SCREEN_W,SCREEN_H);
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+225,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+225,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
@@ -592,8 +592,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+315 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+395)
         {
             choix = 4;//ouverture de la boutique
-            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-450,SCREEN_H/4+325,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
-            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+300,SCREEN_H/4+325,SCREEN_W,SCREEN_H);
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+310,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+310,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
@@ -601,8 +601,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+400 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+480)
         {
             choix = 5;//Affichage des crédits
-            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-450,SCREEN_H/4+410,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
-            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+300,SCREEN_H/4+410,SCREEN_W,SCREEN_H);
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+395,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+395,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
@@ -610,8 +610,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+485 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+565)
         {
             choix = 6;//Sous-menu des extensions
-            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-450,SCREEN_H/4+495,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
-            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+300,SCREEN_H/4+495,SCREEN_W,SCREEN_H);
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+480,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+480,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
@@ -619,8 +619,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+570 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+650)
         {
             choix = 7;//Quitter
-            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-450,SCREEN_H/4+580,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
-            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+300,SCREEN_H/4+580,SCREEN_W,SCREEN_H);
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+560,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+560,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
