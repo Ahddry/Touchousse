@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1617628153 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\main.cpp
+1617631569 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\main.cpp
 	<iostream>
 	"Plan_Pistes.h"
-	"Station.h"
+	"Menus.h"
 
-1617620613 c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\plan_pistes.h
+1617631229 c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\plan_pistes.h
 	"Point.h"
 	<vector>
 	<allegro.h>
@@ -19,7 +19,7 @@
 	"Point.h"
 	<set>
 
-1617629532 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\plan_pistes.cpp
+1617631284 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\plan_pistes.cpp
 	"Plan_Pistes.h"
 	"time.h"
 	"math.h"
@@ -39,12 +39,20 @@
 1617568409 c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\trajet.h
 	<string>
 
-1617573756 c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\point.h
+1617631615 c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\point.h
 	"Trajet.h"
 	<vector>
 
-1617573764 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\point.cpp
+1617631615 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\point.cpp
 	"Point.h"
 	<climits>
 	<iostream>
+
+1617631325 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\menus.cpp
+	"Menus.h"
+	<fstream>
+
+1617631057 c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\menus.h
+	"Plan_Pistes.h"
+	"Station.h"
 

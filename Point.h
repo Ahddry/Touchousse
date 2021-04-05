@@ -39,7 +39,6 @@ public:
     int getDijk() const;        //Récupération de l'antécédent par recherche du chemin le plus court
     void setBfs(int bfs);       //Attribution d'un antécédent par recherche des chemins BFS
     int getBfs() const;         //Récupération de l'antécédent par recherche des chemins BFS
-    void afficher() const;      //Affichage du point et de ses connexions
 };
 
 #endif // POINT_H_INCLUDED

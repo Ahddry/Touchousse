@@ -106,17 +106,3 @@ int Point::getBfs() const         //Récupération de l'antécédent par recherche d
 {
     return m_anteBfs;
 }
-
-void Point::afficher() const//Affichage du point et de ses connexions
-{
-    /*
-    int a = atoi(m_lieu.c_str());
-    if(a==0) std::cout<<m_lieu<<" : "<<std::endl;
-    else std::cout<<"Point "<<m_num<<" : "<<std::endl;
-    std::cout<<"Antecedants : ";
-    for(const auto& elem: m_antecedant) std::cout<<elem.getDepart()<<" : "<<;
-    std::cout<<"\nSuivants : ";
-    for(const auto& elem: m_suivant) std::cout<<elem.getArrivee()<<" ";
-    std::cout<<std::endl<<std::endl;
-    */
-}

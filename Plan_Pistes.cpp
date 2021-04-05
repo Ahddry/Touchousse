@@ -338,6 +338,46 @@ void Plan_Pistes::erreur(std::string msg)///Message d'erreur en rouge au bas de 
     rest(1500);
 }
 
+void Plan_Pistes::regles(std::vector<std::string> regles)//affichage des règles ou des crédits sur un panneau au dessus du menu principal
+{
+    effacer();
+    //Chargement des polices
+    FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
+    FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
+
+    //Chargement de la banière de titre et affichage du titre
+    BITMAP* baniere = load_bitmap_check("Graphics/Menu.bmp");
+    masked_blit(baniere,m_plan,0,0,SCREEN_W/2-566,0,SCREEN_W,SCREEN_H);
+    textout_centre_ex(m_plan, MainTitle,"Batailles        d'Etats", SCREEN_W/2,SCREEN_H/4-75, makecol(255,200,0),-1);
+    textout_centre_ex(m_plan, MainTitle," & coups", SCREEN_W/2+7,SCREEN_H/4-90, makecol(255,200,0),-1);
+    //Affichage du panneau
+    //BITMAP* planche = load_bitmap_check("img/regles.bmp");
+    //masked_blit(planche,m_plan,0,220,SCREEN_W/2-750,0,SCREEN_W,SCREEN_H);
+    int j = 25, w = j;
+    for(const auto& elem:regles)//Affichage du texte donné
+    {
+        textout_centre_ex(m_plan, old,elem.c_str(), SCREEN_W/2, SCREEN_H/4+20+w, makecol(255,255,255),-1);
+        w+=j;
+    }
+    //Boutton retour
+    rectfill(m_plan, 25, SCREEN_H-80, 125, SCREEN_H-25, makecol(160,108,61));
+    textout_centre_ex(m_plan, old,"Retour", 75,SCREEN_H-75, makecol(200,200,200),-1);
+    bool fin = false;
+    afficher();
+    while(!fin)//Attends que l'utilisateur appuie sur retour ou sur sa touche [ECHAP]
+    {
+        if ( mouse_b&1 && mouse_x>=25 && mouse_y>=SCREEN_H-80 && mouse_x<=125 &&mouse_y<=SCREEN_H-25 && !fin)
+        {
+            fin=true;
+            break;
+        }
+        if (key[KEY_ESC])
+        {
+            fin=true;
+            break;
+        }
+    }
+}
 
 
 int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l'utilisateur sur une des options proposées

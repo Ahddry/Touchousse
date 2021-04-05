@@ -36,6 +36,7 @@ public:
     std::string saisie(std::string titre, std::string texte);//saisie similaire à un "std::getline(std::cin, variable)" de l'utilisateur, pour allegro
     void effacer();         //effacer tous les éléments actuellement en buffer
     void erreur(std::string msg);//message d'erreur en rouge au bas de l'écran
+    void regles(std::vector<std::string> regles);
     int menuPrincipal();    //Menu principal du jeu, attendant un clic de l'utilisateur sur une des options proposées
     void standby();         //attente que l'utilisateur clique sur fermer ou appuie sur [ECHAP]
 };
