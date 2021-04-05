@@ -12,6 +12,7 @@ bool Menus::principal()///Menu principal du jeu
     bool fin = false;
     m_plan.effacer();
     int choix;
+    Station s(m_plan);
     choix = m_plan.menuPrincipal();  //Selection du choix de l'utilisateur et affichage du menu
     switch(choix)
     {
@@ -20,7 +21,6 @@ bool Menus::principal()///Menu principal du jeu
         ///Affichage du plan interactif
         m_plan.effacer();
         m_plan.setup();
-        Station s(m_plan);
         s.interactif();
         m_plan.standby();
         break;
@@ -28,7 +28,10 @@ bool Menus::principal()///Menu principal du jeu
     case 2:
     {
         ///Où suis-je
-
+        m_plan.effacer();
+        m_plan.setup();
+        s.arc();
+        m_plan.standby();
         break;
     }
     case 3:

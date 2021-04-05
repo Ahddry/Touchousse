@@ -206,8 +206,7 @@ public:
 
 void Station::interactif()
 {
-
-    for(auto& elem:m_points)
+    for(const auto& elem:m_points)
     {
         m_plan.point(elem);
     }
@@ -231,7 +230,6 @@ void Station::interactif()
                 if(connex.first == point.first && connex.second==point.second) compteur++;
                 if(connex.first == point.second && connex.second==point.first) compteur++;
             }
-            std::cout<<"Point "<<t.getDepart()<<"\tCompteur = "<<compteur<<std::endl;
             m_plan.trajet(t, elem, m_points[t.getArrivee()], compteur);
 
             compteur = 0;
@@ -240,10 +238,37 @@ void Station::interactif()
         }
 
     }
-    std::cout<<"prout"<<std::endl;
     m_plan.descripPistes();
     m_plan.afficher();
     Point selection = m_plan.selecPoint(m_points);
-    std::cout<< "Tu as clique sur le point "<<selection.getNum()<<std::endl;
     m_plan.infoPoint(selection);
+}
+
+void Station::arc()
+{
+    std::string saisie = m_plan.saisie("Ou vous trouvez-vous ?", "Veuillez saisir le numero ou le nom de votre trajet :");
+    bool trouve = false;
+    if(atoi((saisie).c_str()) == 0)
+    {
+        for(const auto& elem:m_trajets)
+        {
+            if(saisie == elem.getNom())
+            {
+                m_plan.infoTrajet(elem, m_points);
+                trouve = true;
+            }
+        }
+    }
+    else
+    {
+        for(const auto& elem:m_trajets)
+        {
+            if(atoi(saisie.c_str()) == elem.getNum())
+            {
+                m_plan.infoTrajet(elem, m_points);
+                trouve = true;
+            }
+        }
+    }
+    if(!trouve) m_plan.erreur("Le trajet saisi n'existe pas dans la station !");
 }

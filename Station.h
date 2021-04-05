@@ -23,7 +23,7 @@ public:
     void resetAttributs();
     void aretes();
     void interactif();
-
+    void arc();
 
 };
 

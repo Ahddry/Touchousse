@@ -10,9 +10,10 @@ private:
     std::string m_type; //Type du trajet
     int m_depart;       //Point de départ de l'arc
     int m_arrivee;      //Point d'arrivée de l'arc
-    double m_poids;        //Poids/durée de parcours de l'arc
+    double m_poids;         //Poids/durée de parcours de l'arc
     int m_altDepart;    //Altitude du point de départ
     int m_altArrivee;   //Altitude du point d'arrivée
+    bool m_selectionable;    //Choix de si l'arc est selectionnable ou non vis-à-vis des paramètres actuels de l'utilisateur
 public:
     Trajet(int num, std::string nom, std::string type, int depart, int arrivee, int altDe, int altAr);
     ~Trajet();
@@ -22,6 +23,8 @@ public:
     int getDepart() const;  //Getter du point de départ de l'arc
     int getArrivee() const; //Getter du point d'arrivée de l'arc
     double getPoids() const;   //Getter du poids de l'arc
+    void setSelec(bool selection);  //Setter du critère de selection
+    bool getSelec() const;      //Getter du critère de selection
 };
 
 #endif // TRAJET_H_INCLUDED
