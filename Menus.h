@@ -13,7 +13,7 @@ public:
     Menus(Plan_Pistes p);
     ~Menus();
     bool principal();       //menu principal
-    bool extras();          //menu des extensions
+    bool cheminInterressant(); //menu des extensions
 };
 
 #endif // MENUS_H_INCLUDED

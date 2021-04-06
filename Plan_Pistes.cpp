@@ -465,6 +465,17 @@ std::string Plan_Pistes::saisie(std::string titre, std::string texte)///saisie s
     textout_centre_ex(m_plan, SubTitle,texte.c_str(), SCREEN_W/2,SCREEN_H/4+80, ROUGE_FONCE,-1);
     afficher();
     set_keyboard_rate(500,200); //pour éviter qu'un appui de touche fasse apparaître plus de charactères que désiré
+    touche=readkey();
+    for(unsigned int i=0; i<100; i++)
+    {
+        if(keypressed())
+        {
+            touche = readkey();
+            saisie +=(char) touche;
+            saisie = "";
+        }
+    }
+
     rest(50);
     char carac;                 //Charactère saisi
     while (!fin)
@@ -672,6 +683,70 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     }
     return choix;
 }
+
+int Plan_Pistes::menuExtras()///Menu des extensions du jeu, attendant un clic de l'utilisateur sur une des options proposées
+{
+    effacer();
+    //Chargement des images
+    BITMAP* baniere = load_bitmap_check("Graphics/Menu.bmp");
+    BITMAP* arrow1 = load_bitmap_check("Graphics/arrow1.bmp");
+    BITMAP* arrow2 = load_bitmap_check("Graphics/arrow2.bmp");
+    blit(m_background,m_plan,0,0,0,0,SCREEN_W,SCREEN_H);
+    masked_blit(baniere,m_plan,0,0,0,0,SCREEN_W,SCREEN_H);
+
+    //Chargement des polices
+    //FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
+    FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
+
+    //Affichage du titre du jeu
+    textout_centre_ex(m_plan, MiddleTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
+
+    std::vector<std::string> propositions;//Ajout des choix à afficher
+    propositions.push_back("Pré-définis");
+    propositions.push_back("Personnalisés");
+    propositions.push_back("Retour");
+    int j=50, choix;
+    for(const auto& elem: propositions)//Affichage des choix
+    {
+        textout_centre_ex(m_plan, MiddleTitle,elem.c_str(), SCREEN_W/2,SCREEN_H/4+j, makecol(255,200,0),-1);
+        j+=85;
+    }
+    bool fin = false;
+    afficher();
+    while (!fin)//Attente que l'utilisateur fasse son choix
+    {
+
+        if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+50 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+140)
+        {
+            choix = 1;//Sous-menu de créateur de carted
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+55,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+55,SCREEN_W,SCREEN_H);
+            afficher();
+            rest(250);
+            fin = true;
+        }
+        if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+145 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+225)
+        {
+            choix = 2;//Affichage des 7 meilleurs joueurs du jeu
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+140,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+140,SCREEN_W,SCREEN_H);
+            afficher();
+            rest(250);
+            fin = true;
+        }
+        if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+230 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+310)
+        {
+            choix = 3;//retour au menu principal
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+225,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+225,SCREEN_W,SCREEN_H);
+            afficher();
+            rest(250);
+            fin = true;
+        }
+    }
+    return choix;
+}
+
 
 
 void Plan_Pistes::standby()///attente que l'utilisateur clique sur fermer ou appuie sur [ECHAP]

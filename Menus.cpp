@@ -9,6 +9,7 @@ Menus::~Menus(){}
 
 bool Menus::principal()///Menu principal du jeu
 {
+    rest(350);
     bool quit = false;
     bool fin = false;
     m_plan.effacer();
@@ -48,7 +49,12 @@ bool Menus::principal()///Menu principal du jeu
     }
     case 4:
     {
-        ///On sait pas
+        ///Choix du chemin le plus interressant
+        ///Sous menu
+        while(!fin)
+        {
+            fin = cheminInterressant();
+        }
         break;
     }
     case 5:
@@ -72,12 +78,7 @@ bool Menus::principal()///Menu principal du jeu
         break;
     }
     case 6:
-        ///Sous menu extras
-        while(!fin)
-        {
-            fin = extras();
-        }
-        break;
+
     case 7 :
         ///Quitter
         quit = true;
@@ -89,20 +90,29 @@ bool Menus::principal()///Menu principal du jeu
     return quit;
 }
 
-bool Menus::extras()///Menu des extensions
+bool Menus::cheminInterressant()    ///Menu du choix des chemins en fonction de critères définis par l'utilisateur
 {
     bool quit = false;
     m_plan.effacer();
     int choix;
-    choix = 3;          //m_plan.menuExtras();//Selection du choix de l'utilisateur et affichage du menu
+    choix = m_plan.menuExtras(); //Selection du choix de l'utilisateur et affichage du menu
     switch(choix)
     {
     case 1:
-        ///On sait pas
+    {
+        ///En utilisant des pré-selections
+        std::string titre = "Veuillez choisir votre préselection de chemin :";
+        std::vector<std::string> choix;
+        choix.push_back("Niveau pioupiou");
+        choix.push_back("Je sais skiier");
+        choix.push_back("J'aime le risque");
+        choix.push_back("Ne pas dechausser");
+        int selec = m_plan.menu(titre, choix, 4);
         break;
+    }
     case 2:
     {
-        ///On sait pas
+        ///En choisissant quelles trajets banir
         break;
     }
     case 3 :

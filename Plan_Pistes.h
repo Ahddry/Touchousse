@@ -14,7 +14,7 @@
 class Plan_Pistes
 {
 private:
-    BITMAP *m_background;   //image de fond de l'affichage
+    BITMAP *m_background;  //image de fond de l'affichage
     BITMAP *m_plan;        //Bitmap servent de buffer pour l'affichage
     BITMAP *m_panneau;     //image du panneau d'affichage
 
@@ -46,6 +46,7 @@ public:
     void erreur(std::string msg);//message d'erreur en rouge au bas de l'écran
     void regles(std::vector<std::string> regles);
     int menuPrincipal();    //Menu principal du jeu, attendant un clic de l'utilisateur sur une des options proposées
+    int menuExtras();       //Menu des extensions du jeu, attendant un clic de l'utilisateur sur une des options proposées
     void standby();         //attente que l'utilisateur clique sur fermer ou appuie sur [ECHAP]
 };
 

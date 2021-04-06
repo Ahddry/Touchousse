@@ -145,9 +145,6 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
             if(elem.getCouleur() != 2) fin = false;             //Vérification de si tous les points ont étés marqués ou non.
         }
     }while(!fin);
-    std::cout<<"Resultat du parcourt de la file par algorithme de Dijkstra : "<<std::endl;
-    std::cout<<"\nDistance parcourue : "<<m_points[arrivee].getDistance()<<std::endl;
-    std::cout<<arrivee;
     int ante = m_points[arrivee].getDijk();
 
     for(auto& elem:m_points)
@@ -158,28 +155,40 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     m_points[arrivee].setSelectDijk(true);
 
     m_plan.setup();
-        ///A DEBUGGER
+    int actuel;
     while(true)
     {
         if(ante!=(-1))                      //Affichage du point d'arrivé et du chemin parcourut
         {
-            std::cout<<" <-- "<< ante;
             m_points[ante].setSelectDijk(true);
-            m_plan.point(m_points[ante]);
-            //ante= m_points[ante].getDijk();
-            std::vector<Trajet> traj = m_points[ante].getAnte();
-            std::priority_queue<Trajet, std::vector<Trajet>, TestPoids> file; //File de priorité des arêtes pondérées, triées par ordre croissant de point d'arrivée
             ante= m_points[ante].getDijk();
-            for(const auto& trajets: traj)
-            {
-                if(trajets.getDepart()==ante)
-                    file.push(trajets);
-            }
-            Trajet t = file.top();
-            m_plan.trajet(t,m_points[t.getDepart()], m_points[t.getArrivee()],0);
         }
         else break;
     }
+    ante = arrivee;
+    for(auto& elem: m_points)
+    {
+        if(m_points[ante].getSelectDijk() && ante!=-1)                      //Affichage du point d'arrivé et du chemin parcourut
+        {
+            m_plan.point(m_points[ante]);
+            actuel = ante;
+            ante= m_points[ante].getDijk();
+            std::vector<Trajet> traj = m_points[actuel].getAnte();
+            std::priority_queue<Trajet, std::vector<Trajet>, TestPoids> file; //File de priorité des arêtes pondérées, triées par ordre croissant de point d'arrivée
+            for(const auto& trajets: traj)
+            {
+                if(trajets.getDepart() == ante)
+                    file.push(trajets);
+            }
+            if(ante !=-1)
+            {
+                Trajet t = file.top();
+                m_plan.trajet(t,m_points[t.getDepart()], m_points[t.getArrivee()],0);
+            }
+        }
+    }
+    ///RAJOUTER UN MESSAGE EN ALLEGRO
+    //"Distance parcourue : " + std::to_string(m_points[arrivee].getDistance())
 
     m_plan.afficher();
 }
