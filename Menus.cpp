@@ -41,10 +41,13 @@ bool Menus::principal()///Menu principal du jeu
         ///Dijkstra
         m_plan.effacer();
         m_plan.setup();
-        int begin, end;
-        s.saisieDijkstra(begin, end);
-        s.dijkstra(begin,end);
-        m_plan.standby();
+        int point1, point2;
+        s.saisieDijkstra(point1, point2);
+        if(s.bfs(point1, point2))
+        {
+            s.dijkstra(point1, point2);
+        }
+        s.resetAttributs();
         break;
     }
     case 4:
@@ -53,7 +56,7 @@ bool Menus::principal()///Menu principal du jeu
         ///Sous menu
         while(!fin)
         {
-            fin = cheminInterressant();
+            fin = cheminInterressant(s);
         }
         break;
     }
@@ -90,7 +93,7 @@ bool Menus::principal()///Menu principal du jeu
     return quit;
 }
 
-bool Menus::cheminInterressant()    ///Menu du choix des chemins en fonction de critères définis par l'utilisateur
+bool Menus::cheminInterressant(Station s)    ///Menu du choix des chemins en fonction de critères définis par l'utilisateur
 {
     bool quit = false;
     m_plan.effacer();
@@ -101,18 +104,23 @@ bool Menus::cheminInterressant()    ///Menu du choix des chemins en fonction de 
     case 1:
     {
         ///En utilisant des pré-selections
-        std::string titre = "Veuillez choisir votre préselection de chemin :";
+        std::string titre = "Veuillez choisir votre preselection de chemin";
         std::vector<std::string> choix;
         choix.push_back("Niveau pioupiou");
         choix.push_back("Je sais skiier");
         choix.push_back("J'aime le risque");
         choix.push_back("Ne pas dechausser");
         int selec = m_plan.menu(titre, choix, 4);
+        s.preselec(selec);
+        s.resetAttributs();
         break;
     }
     case 2:
     {
-        ///En choisissant quelles trajets banir
+        ///En choisissant quels trajets banir
+        m_plan.setup();
+        m_plan.emphase("Trajet personnalise", "Choississez quels types de trajets vous desirez");
+
         break;
     }
     case 3 :

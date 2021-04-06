@@ -26,6 +26,7 @@ Trajet::Trajet(int num, std::string nom, std::string type, int depart, int arriv
     }
     if(m_poids < 0) m_poids *= -1;
     m_selectionable = true;
+    m_interet = m_poids;
 }
 
 
@@ -57,6 +58,24 @@ int Trajet::getDepart() const
 double Trajet::getPoids() const
 {
     return m_poids;//Getter du poids de l'arc
+}
+
+
+void Trajet::setInteret(bool interet)   //setter de l'intéret de l'arc
+{
+    if(interet==true)
+    {
+        m_interet = m_poids;
+    }
+    else
+    {
+        m_interet = m_poids*150;
+    }
+}
+
+double Trajet::getInteret() const   //Getter de l'intéret de l'arc
+{
+    return m_interet;
 }
 
 void Trajet::setSelec(bool selection)  //Setter du critère de selection

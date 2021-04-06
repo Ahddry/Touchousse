@@ -130,6 +130,7 @@ void Plan_Pistes::descripPistes()
     traj.push_back(Trajet(0, "", "TSD", 0, 0, 0, 0));
     traj.push_back(Trajet(0, "", "TS", 0, 0, 0, 0));
     traj.push_back(Trajet(0, "", "TK", 0, 0, 0, 0));
+    traj.push_back(Trajet(0, "", "BUS", 0, 0, 0, 0));
     y = 700;
     for(const auto& elem:traj)
     {
@@ -280,9 +281,7 @@ void Plan_Pistes::infoPoint(Point point)
     for(const auto& elem:point.getAnte())
     {
         entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true); ///TRIER LES ARETES SI YA LE TEMPS
-        std::string poids = std::to_string(elem.getPoids());
-        poids.erase(poids.find_last_not_of('0')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
-        poids.erase(poids.find_last_not_of('.')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+        std::string poids = cutDouble(elem.getPoids());
         textout_ex(m_plan, old,(elem.getNom() + " : " + poids + "mins").c_str(), x+285, y-17, SOUS_TITRE,-1);
         y+=75;
     }
@@ -291,9 +290,7 @@ void Plan_Pistes::infoPoint(Point point)
     for(const auto& elem:point.getSuiv())
     {
         entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true);
-        std::string poids = std::to_string(elem.getPoids());
-        poids.erase(poids.find_last_not_of('0')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
-        poids.erase(poids.find_last_not_of('.')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+        std::string poids = cutDouble(elem.getPoids());
         textout_right_ex(m_plan, old,(poids + "mins : " + elem.getNom()).c_str(), x-35, y-17, SOUS_TITRE,-1);
         y+=75;
     }
@@ -311,9 +308,7 @@ void Plan_Pistes::infoTrajet(Trajet traj, std::vector<Point> points)
     rest(1200);
     setup();
     //Titre centré
-    std::string poids = std::to_string(traj.getPoids());
-    poids.erase(poids.find_last_not_of('0')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
-    poids.erase(poids.find_last_not_of('.')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+    std::string poids = cutDouble(traj.getPoids());
     std::string sousTitre = std::to_string(traj.getNum()) + " : " + traj.getNom();
     textout_centre_ex(m_plan, MiddleTitle,"Informations sur le trajet", SCREEN_W/2,40, ROUGE_DOUX,-1);
     textout_centre_ex(m_plan, SubTitle,sousTitre.c_str(), SCREEN_W/2,120, SOUS_TITRE,-1);
@@ -373,6 +368,14 @@ std::string Plan_Pistes::longType(std::string type) const
     return typeLong;
 }
 
+std::string Plan_Pistes::cutDouble(double nombre)
+{
+    std::string poids = std::to_string(nombre);
+    poids.erase(poids.find_last_not_of('0')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+    poids.erase(poids.find_last_not_of('.')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+    return poids;
+}
+
 
 void Plan_Pistes::emphase(std::string titre, std::string sousTitre)
 {   ///Message accentué avec une première chose écrite en gros et une seconde en un peu plus petit en dessous
@@ -392,16 +395,14 @@ int Plan_Pistes::menu(std::string titre, std::vector<std::string> propositions, 
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
 
-    //image de fond
-    BITMAP* menu = load_bitmap_check("img/Menu.bmp");
-    masked_blit(menu,m_plan,0,0,SCREEN_W/2-360,SCREEN_H/10-72,SCREEN_W,SCREEN_H);
+    setup();
 
     //Texte centré
-    textout_centre_ex(m_plan, MiddleTitle,titre.c_str(), SCREEN_W/2,SCREEN_H/4, makecol(213,70,40),-1);
+    textout_centre_ex(m_plan, MiddleTitle,titre.c_str(), SCREEN_W/2,SCREEN_H/4, ROUGE_DOUX,-1);
     int j=100;
     for(const auto& elem: propositions)
     {
-        textout_centre_ex(m_plan, SubTitle,elem.c_str(), SCREEN_W/2,SCREEN_H/4+j, makecol(160,108,61),-1);
+        textout_centre_ex(m_plan, SubTitle,elem.c_str(), SCREEN_W/2,SCREEN_H/4+j, SOUS_TITRE,-1);
         j+=75;
     }
 
@@ -527,7 +528,7 @@ void Plan_Pistes::erreur(std::string msg)///Message d'erreur en rouge au bas de 
     //Police
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
     //Message
-    rectfill(m_plan, SCREEN_W/2-500, SCREEN_H-220, SCREEN_W/2+500, SCREEN_H-160, MONTAGNE);
+    rectfill(m_plan, SCREEN_W/2-700, SCREEN_H-220, SCREEN_W/2+700, SCREEN_H-160, MONTAGNE);
     textout_centre_ex(m_plan, SubTitle,msg.c_str(), SCREEN_W/2,SCREEN_H/4*3, ROUGE_DOUX,-1);
     afficher();
     rest(1500);
@@ -595,8 +596,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     std::vector<std::string> propositions;//Ajout des choix à afficher
     propositions.push_back("Plan interactif");
     propositions.push_back("Infos Trajets");
-    propositions.push_back("Dijkstra");
-    propositions.push_back("???");
+    propositions.push_back("Plus court chemin");
+    propositions.push_back("Choix chemin");
     propositions.push_back("Credits");
     propositions.push_back("Extras");
     propositions.push_back("Quitter");
@@ -702,13 +703,13 @@ int Plan_Pistes::menuExtras()///Menu des extensions du jeu, attendant un clic de
     textout_centre_ex(m_plan, MiddleTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
 
     std::vector<std::string> propositions;//Ajout des choix à afficher
-    propositions.push_back("Pré-définis");
-    propositions.push_back("Personnalisés");
+    propositions.push_back("Pre-definis");
+    propositions.push_back("Personnalises");
     propositions.push_back("Retour");
     int j=50, choix;
     for(const auto& elem: propositions)//Affichage des choix
     {
-        textout_centre_ex(m_plan, MiddleTitle,elem.c_str(), SCREEN_W/2,SCREEN_H/4+j, makecol(255,200,0),-1);
+        textout_centre_ex(m_plan, MiddleTitle,elem.c_str(), SCREEN_W/2,SCREEN_H/4+j, ROUGE_DOUX,-1);
         j+=85;
     }
     bool fin = false;

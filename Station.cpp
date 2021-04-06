@@ -40,9 +40,9 @@ int Station::getOrdre() const    //getter pour l'ordre du graphe
     return m_ordre;
 }
 
-void Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
+bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
 {
-    if(depart>m_ordre-1) std::cout<<"Le numero de point choisit pour commencer est invalide."<<std::endl;
+    if(depart<1) m_plan.erreur("Le numero de point choisit pour commencer est invalide.");
     else
     {
         for(auto& elem: m_points)
@@ -57,46 +57,53 @@ void Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
             Point pointTemp = file.front();        //récupération de la tête de file
             for(auto& traj:pointTemp.getSuiv())     //parcourt de ses successeurs
             {
-                int succ = traj.getArrivee();
-                if(m_points[succ].getCouleur()==0) //opération uniquement sur ceux blanc (non découverts
+                if(selecArc(traj))
                 {
-                    m_points[succ].setCouleur(1);  //passage du point découvert à gris
-                    m_points[succ].setBfs(pointTemp.getNum());  //marque de son prédécesseur
-                    file.push(m_points[succ]);     //ajout du point découvert à la file
+                    int succ = traj.getArrivee();
+                    if(m_points[succ].getCouleur()==0) //opération uniquement sur ceux blanc (non découverts
+                    {
+                        m_points[succ].setCouleur(1);  //passage du point découvert à gris
+                        m_points[succ].setBfs(pointTemp.getNum());  //marque de son prédécesseur
+                        file.push(m_points[succ]);     //ajout du point découvert à la file
+
+                    }
                 }
             }
             pointTemp.setCouleur(2);                //passage du point traité à noir
             file.pop();                     //suppression du point traité de la file
 
         }
-        std::cout<<"----------------------------"<<std::endl;
-        std::cout<<"Resultat du parcourt de la file par BFS : "<<std::endl;
         for(const auto& elem:m_points)
         {
-            std::cout<<elem.getNum();
             int anteBfs = elem.getBfs();
             while(true)
             {
                 if(anteBfs!=(-1))
                 {
-                    std::cout<<" <-- "<< anteBfs;
                     anteBfs= m_points[anteBfs].getBfs();
                 }
                 else break;
             }
-            std::cout<<std::endl;
         }
+        if(m_points[arrivee].getBfs()==-1)
+        {
+            m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
+            return false;
+        }
+        else return true;
     }
+    m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
+    return false;
 }
 
 class TestPoids
 {
 public:
-    int operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
+    double operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
     {
         if(t1.getPoids()==t2.getPoids())
             return t1.getDepart() > t2.getDepart(); //En cas de même poids, tri par ordre croissant du nombre de départ
-        return t1.getPoids() > t2.getPoids();       //Comparaison du poids d'une arête à celui d'une autre
+        return t1.getInteret() > t2.getInteret();       //Comparaison du poids d'une arête à celui d'une autre
     }
 };
 
@@ -105,15 +112,20 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     for(auto& elem:m_points)                   //Mise à blanc des points
     {
         elem.setCouleur(0);
+        if(!elem.getSelectDijk()) elem.setCouleur(2);
     }
     m_points[depart].setDistance(0);       //Le point de départ a une distance de 0
     m_points[depart].setCouleur(1);        //et est marqué comme repéré
     m_points[0].setCouleur(2);             //on met le points 0 qui est fictif à 2
     bool fin = false;
+    ///std::cout<<"TEST1"<<std::endl;
+    int boucle = 1;
     do
     {
+        ///std::cout<<"boucle : "<<boucle<<std::endl;
+        boucle++;
         int numS = -1;                      //numéro de point
-        int dist = INT_MAX;                 //Distance la plus courte au point de départ
+        double dist = INT_MAX;                 //Distance la plus courte au point de départ
         for(auto& elem:m_points)
         {
             if(elem.getCouleur()==1 && elem.getDistance()<dist) //Récupération du point non marqué comme finit avec la distance la plus courte au point de départ
@@ -122,21 +134,30 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
                 dist = elem.getDistance();
             }
         }
-        for(auto& truc:m_points[numS].getSuiv())               //Récupération des points suivant ce dernier
+        for(auto& truc:m_points[numS].getSuiv())               //Récupération des arcs suivant ce dernier
         {
-            int z = truc.getArrivee();
-            if(m_points[z].getCouleur()==0)                    //S'ils ne sont pas encore marqués
+            if(selecArc(truc))
             {
-                m_points[z].setDijk(numS);                     //Ajout comme antécédant
-                m_points[z].setDistance(truc.getPoids()+dist); //Attribution de la distance au départ
-                m_points[z].setCouleur(1);                     //Marquage du point
-            }
-            else if(m_points[z].getDistance()>(dist+truc.getPoids()))  //S'ils sont marqués mais que leur distance doit être mise à jour
-            {
-                m_points[z].setDijk(numS);                         //Remplacement de l'antécédant
-                m_points[z].setDistance(truc.getPoids()+dist);     //mise à jour de la distance
-            }
+                double poids = truc.getPoids(), cste = 1;
+                for(const auto& type: m_ininteret)
+                {
+                    if(truc.getType() == type) cste = 150.4;
+                }
+                poids *= cste;
+                int z = truc.getArrivee();
+                if(m_points[z].getCouleur()==0)                    //Si leurs points d'arrivée ne sont pas encore marqués
+                {
+                    m_points[z].setDijk(numS);//Ajout comme antécédant
+                    m_points[z].setDistance(poids+dist); //Attribution de la distance au départ
+                    m_points[z].setCouleur(1);                     //Marquage du point
+                }
+                else if(m_points[z].getDistance()>(dist+poids))  //S'ils sont marqués mais que leur distance doit être mise à jour
+                {
+                    m_points[z].setDijk(numS);    //Remplacement de l'antécédant
+                    m_points[z].setDistance(poids+dist);     //mise à jour de la distance
 
+                }
+            }
         }
         m_points[numS].setCouleur(2);                          //Marquage du point actuel comme finit
         fin = true;
@@ -145,6 +166,7 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
             if(elem.getCouleur() != 2) fin = false;             //Vérification de si tous les points ont étés marqués ou non.
         }
     }while(!fin);
+    ///std::cout<<"TEST2"<<std::endl;
     int ante = m_points[arrivee].getDijk();
 
     for(auto& elem:m_points)
@@ -153,7 +175,7 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     }
 
     m_points[arrivee].setSelectDijk(true);
-
+    double duree = 0;
     m_plan.setup();
     int actuel;
     while(true)
@@ -165,6 +187,7 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
         }
         else break;
     }
+    ///std::cout<<"TEST3"<<std::endl;
     ante = arrivee;
     for(auto& elem: m_points)
     {
@@ -174,23 +197,50 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
             actuel = ante;
             ante= m_points[ante].getDijk();
             std::vector<Trajet> traj = m_points[actuel].getAnte();
+
+            for(const auto& type: m_ininteret)
+            {
+                for(auto& trajets: traj)
+                {
+                    if(trajets.getType() == type)
+                        trajets.setInteret(false);
+                }
+            }
+
             std::priority_queue<Trajet, std::vector<Trajet>, TestPoids> file; //File de priorité des arêtes pondérées, triées par ordre croissant de point d'arrivée
             for(const auto& trajets: traj)
             {
                 if(trajets.getDepart() == ante)
                     file.push(trajets);
             }
+            bool affiche = false;
             if(ante !=-1)
             {
-                Trajet t = file.top();
-                m_plan.trajet(t,m_points[t.getDepart()], m_points[t.getArrivee()],0);
+                while(!affiche)
+                {
+                    Trajet t = file.top();
+                    if(selecArc(t))
+                    {
+
+                        duree+=t.getPoids();
+                        m_plan.trajet(t,m_points[t.getDepart()], m_points[t.getArrivee()],0);
+                        affiche = true;
+                    }
+                    else file.pop();
+                }
             }
         }
+        elem.setBfs(-1);            //Pour éviter un warning sur la non utilisation de la varible "elem" -> sans effet reel.
     }
-    ///RAJOUTER UN MESSAGE EN ALLEGRO
-    //"Distance parcourue : " + std::to_string(m_points[arrivee].getDistance())
 
+    ///RAJOUTER UN MESSAGE EN ALLEGRO
+    //std::cout<<"Duree poids : " + std::to_string(m_points[arrivee].getDistance())<<std::endl;
+    //std::cout<<"Duree reele : " + std::to_string(duree)<<std::endl;
+    m_plan.descripPistes();
     m_plan.afficher();
+    m_plan.standby();
+    m_plan.emphase("La duree moyenne de ce chemin est de", m_plan.cutDouble(duree)+" minutes");
+    m_plan.standby();
 }
 
 void Station::afficher() const       //Affichage du graphe
@@ -220,17 +270,12 @@ void Station::resetAttributs()
         elem.setCouleur(0);         //Mise à l'état 0 de la couleur
         elem.setDijk(-1);           //Mise à -1 (aucun) de l'antécédant
         elem.setBfs(-1);            //Mise à -1 (aucun) de l'antécédant
+        elem.setSelectDijk(true);   //Mise à vrai du critère de sélection
     }
-}
-
-void Station::aretes()
-{
-    for(auto& elem:m_points)
+    for(auto& elem:m_trajets)
     {
-        for(auto& traj: elem.getSuiv())
-        {
-            std::cout<<traj.getNum()<<"\t"<<traj.getNom()<<"\t"<<traj.getType()<<"\t"<<traj.getDepart()<<"\t"<<traj.getArrivee()<<"\t|"<<traj.getPoids()<<std::endl;
-        }
+        elem.setSelec(true);
+        elem.setInteret(true);
     }
 }
 
@@ -339,6 +384,95 @@ void Station::saisieDijkstra(int& point1, int& point2)
 }
 
 
+bool Station::selecArc(Trajet t)
+{
+    for(auto& elem:m_trajets)
+    {
+        if(t.getDepart() == elem.getDepart() && t.getArrivee() == elem.getArrivee() && t.getPoids() == elem.getPoids() && (elem.getSelec()==true))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Station::preselec(int presel)
+{
+    resetAttributs();
+    int point1 = 0, point2 = 0;
+    switch(presel)
+    {
+    case 1:
+    {
+        for(auto& elem:m_trajets)
+        {
+            std::string type = elem.getType();
+            if(type == "N" || type =="KL" || type =="SURF")
+            {
+                elem.setSelec(false);
+            }
+        }
+        m_ininteret.push_back("R");
+        saisieDijkstra(point1, point2);
+        if(bfs(point1, point2))
+        {
+            dijkstra(point1, point2);
+        }
+        break;
+    }
+    case 2:
+        {
+            for(auto& elem:m_trajets)
+            {
+                std::string type = elem.getType();
+                if(type =="KL")
+                {
+                    elem.setSelec(false);
+                }
+            }
+            m_ininteret.push_back("N");
+            m_ininteret.push_back("SURF");
+            saisieDijkstra(point1, point2);
+            if(bfs(point1, point2))
+            {
+                dijkstra(point1, point2);
+            }
+            break;
+        }
+    case 3:
+        {
+            m_ininteret.push_back("B");
+            m_ininteret.push_back("BUS");
+            saisieDijkstra(point1, point2);
+            if(bfs(point1, point2))
+            {
+                dijkstra(point1, point2);
+            }
+            break;
+        }
+    case 4:
+        {///CA CRASH POUR L'INSTANT
+            for(auto& elem:m_trajets)
+            {
+                std::string type = elem.getType();
+                if(type =="BUS" || type == "TC" || type == "TPH")
+                {
+                    elem.setSelec(false);
+                }
+            }
+            m_ininteret.push_back("TSD");
+            m_ininteret.push_back("TS");
+            m_ininteret.push_back("TK");
+            saisieDijkstra(point1, point2);
+            if(bfs(point1, point2))
+            {
+                std::cout<<"TEST"<<std::endl;
+                dijkstra(point1, point2);
+            }
+            break;
+        }
+    }
+}
 
 
 

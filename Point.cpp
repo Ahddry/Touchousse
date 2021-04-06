@@ -65,7 +65,8 @@ std::vector<Trajet> Point::getSuiv() const//Récupération de tous les arcs suivan
     std::vector<Trajet> suiv;
     for(const auto& elem:m_suivant)
     {
-        suiv.push_back(elem);
+        if(elem.getSelec())
+            suiv.push_back(elem);
     }
     return suiv;
 }
