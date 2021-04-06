@@ -89,6 +89,16 @@ void Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
     }
 }
 
+class TestPoids
+{
+public:
+    int operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
+    {
+        if(t1.getPoids()==t2.getPoids())
+            return t1.getDepart() > t2.getDepart(); //En cas de même poids, tri par ordre croissant du nombre de départ
+        return t1.getPoids() > t2.getPoids();       //Comparaison du poids d'une arête à celui d'une autre
+    }
+};
 
 void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
 {
@@ -139,16 +149,39 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     std::cout<<"\nDistance parcourue : "<<m_points[arrivee].getDistance()<<std::endl;
     std::cout<<arrivee;
     int ante = m_points[arrivee].getDijk();
+
+    for(auto& elem:m_points)
+    {
+        elem.setSelectDijk(false);
+    }
+
+    m_points[arrivee].setSelectDijk(true);
+
+    m_plan.setup();
+        ///A DEBUGGER
     while(true)
     {
         if(ante!=(-1))                      //Affichage du point d'arrivé et du chemin parcourut
         {
             std::cout<<" <-- "<< ante;
+            m_points[ante].setSelectDijk(true);
+            m_plan.point(m_points[ante]);
+            //ante= m_points[ante].getDijk();
+            std::vector<Trajet> traj = m_points[ante].getAnte();
+            std::priority_queue<Trajet, std::vector<Trajet>, TestPoids> file; //File de priorité des arêtes pondérées, triées par ordre croissant de point d'arrivée
             ante= m_points[ante].getDijk();
+            for(const auto& trajets: traj)
+            {
+                if(trajets.getDepart()==ante)
+                    file.push(trajets);
+            }
+            Trajet t = file.top();
+            m_plan.trajet(t,m_points[t.getDepart()], m_points[t.getArrivee()],0);
         }
         else break;
     }
-    std::cout<<std::endl;
+
+    m_plan.afficher();
 }
 
 void Station::afficher() const       //Affichage du graphe
@@ -272,3 +305,31 @@ void Station::arc()
     }
     if(!trouve) m_plan.erreur("Le trajet saisi n'existe pas dans la station !");
 }
+
+void Station::saisieDijkstra(int& point1, int& point2)
+{
+    m_plan.effacer();
+    m_plan.setup();
+
+    do
+    {
+        point1 = atoi(m_plan.saisie("Ou vous trouvez-vous ?", "Veuillez saisir le numero de depart :").c_str());
+        if(point1<=0){m_plan.erreur("La location n'existe pas");}
+        if(point1>37){m_plan.erreur("La location n'existe pas");}
+    }while(point1<=0||point1>37);
+
+    m_plan.effacer();
+    m_plan.setup();
+
+    do
+    {
+        point2 = atoi(m_plan.saisie("Ou voulez allez ?", "Veuillez saisir le numero d'arrivee :").c_str());
+        if(point2<=0){m_plan.erreur("La location n'existe pas");}
+        if(point2>37){m_plan.erreur("La location n'existe pas");}
+    }while(point2<=0||point2>37);
+}
+
+
+
+
+

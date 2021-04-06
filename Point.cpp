@@ -10,6 +10,7 @@ Point::Point(int num, std::string nom, int alt, int x, int y) : m_num(num), m_li
     m_anteBfs = -1;        //Mise à -1 (aucun) de l'antécédant
     m_X+=35;
     m_Y+=40;
+    m_selectDijk = true;
 }
 
 Point::~Point(){}
@@ -107,4 +108,14 @@ void Point::setBfs(int bfs)       //Attribution d'un antécédent par recherche de
 int Point::getBfs() const         //Récupération de l'antécédent par recherche des chemins BFS
 {
     return m_anteBfs;
+}
+
+bool Point::getSelectDijk() const           //Récupération de l'état de selection du sommet
+{
+    return m_selectDijk;
+}
+
+void Point::setSelectDijk(bool selectDijk)          //Attribution de l'existence du sommet ou non
+{
+    m_selectDijk = selectDijk;
 }

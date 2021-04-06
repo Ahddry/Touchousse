@@ -612,7 +612,7 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
 
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+145 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+225)
         {
-            choix = 2;//Affichge infos trajets
+            choix = 2;//Affichage infos trajets
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+140,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+140,SCREEN_W,SCREEN_H);
             afficher();

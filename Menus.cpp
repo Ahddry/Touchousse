@@ -41,9 +41,7 @@ bool Menus::principal()///Menu principal du jeu
         m_plan.effacer();
         m_plan.setup();
         int begin, end;
-        std::cout << "saisissez le point de départ et d'arrivé de votre parcours !" << std::endl;
-        std::cin >> begin;
-        std::cin >> end;
+        s.saisieDijkstra(begin, end);
         s.dijkstra(begin,end);
         m_plan.standby();
         break;

@@ -24,6 +24,7 @@ public:
     void aretes();
     void interactif();
     void arc();
+    void saisieDijkstra(int& point1, int& point2);
 
 };
 

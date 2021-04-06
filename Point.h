@@ -19,6 +19,8 @@ private:
     double m_distance; //Distance du point de départ
     int m_anteDijk; //antécédant par recherche du chemin le plus court
     int m_anteBfs;  //antécédant par recherche des chemins BFS
+
+    bool m_selectDijk;
 public:
     Point(int num, std::string nom, int alt, int x, int y);
     ~Point();
@@ -39,6 +41,8 @@ public:
     int getDijk() const;        //Récupération de l'antécédent par recherche du chemin le plus court
     void setBfs(int bfs);       //Attribution d'un antécédent par recherche des chemins BFS
     int getBfs() const;         //Récupération de l'antécédent par recherche des chemins BFS
+    bool getSelectDijk() const;        //getteur du critère de selection pour Dijkstra
+    void setSelectDijk(bool selectDijk);         //critère de selection pour Dijkstra
 };
 
 #endif // POINT_H_INCLUDED
