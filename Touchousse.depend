@@ -57,15 +57,16 @@
 	"Plan_Pistes.h"
 	"Station.h"
 
-1617649434 source:d:\bureau\projet theorie des graphes\touchousse\menus.cpp
+1617704598 source:d:\bureau\projet theorie des graphes\touchousse\menus.cpp
 	"Menus.h"
 	<fstream>
+	<iostream>
 
-1617632912 d:\bureau\projet theorie des graphes\touchousse\menus.h
+1617700890 d:\bureau\projet theorie des graphes\touchousse\menus.h
 	"Plan_Pistes.h"
 	"Station.h"
 
-1617649342 d:\bureau\projet theorie des graphes\touchousse\plan_pistes.h
+1617700890 d:\bureau\projet theorie des graphes\touchousse\plan_pistes.h
 	"Point.h"
 	<vector>
 	<allegro.h>
@@ -75,34 +76,34 @@
 	<time.h>
 	<string>
 
-1617632912 d:\bureau\projet theorie des graphes\touchousse\point.h
+1617700890 d:\bureau\projet theorie des graphes\touchousse\point.h
 	"Trajet.h"
 	<vector>
 
-1617632912 d:\bureau\projet theorie des graphes\touchousse\trajet.h
+1617700890 d:\bureau\projet theorie des graphes\touchousse\trajet.h
 	<string>
 
-1617649342 d:\bureau\projet theorie des graphes\touchousse\station.h
+1617700890 d:\bureau\projet theorie des graphes\touchousse\station.h
 	"Plan_Pistes.h"
 	"Point.h"
 	<set>
 
-1617649434 source:d:\bureau\projet theorie des graphes\touchousse\plan_pistes.cpp
+1617703122 source:d:\bureau\projet theorie des graphes\touchousse\plan_pistes.cpp
 	"Plan_Pistes.h"
 	"time.h"
 	<ctime>
 	"math.h"
 	<iostream>
 
-1617649342 source:d:\bureau\projet theorie des graphes\touchousse\point.cpp
+1617700890 source:d:\bureau\projet theorie des graphes\touchousse\point.cpp
 	"Point.h"
 	<climits>
 	<iostream>
 
-1617649342 source:d:\bureau\projet theorie des graphes\touchousse\trajet.cpp
+1617700890 source:d:\bureau\projet theorie des graphes\touchousse\trajet.cpp
 	"Trajet.h"
 
-1617649613 source:d:\bureau\projet theorie des graphes\touchousse\station.cpp
+1617700890 source:d:\bureau\projet theorie des graphes\touchousse\station.cpp
 	"Station.h"
 	<queue>
 	<fstream>
@@ -110,7 +111,7 @@
 	<algorithm>
 	<utility>
 
-1617649697 source:d:\bureau\projet theorie des graphes\touchousse\main.cpp
+1617700890 source:d:\bureau\projet theorie des graphes\touchousse\main.cpp
 	<iostream>
 	"Plan_Pistes.h"
 	"Menus.h"

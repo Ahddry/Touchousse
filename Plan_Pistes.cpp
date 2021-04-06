@@ -584,7 +584,7 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     std::vector<std::string> propositions;//Ajout des choix à afficher
     propositions.push_back("Plan interactif");
     propositions.push_back("Infos Trajets");
-    propositions.push_back("???");
+    propositions.push_back("Dijkstra");
     propositions.push_back("???");
     propositions.push_back("Credits");
     propositions.push_back("Extras");
@@ -602,40 +602,44 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
 
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+50 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+140)
         {
-            choix = 1;//Lancer le jeu
+            choix = 1;//Lancer le plan interractif
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+55,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+55,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
         }
+
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+145 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+225)
         {
-            choix = 2;//Affichge des règles
+            choix = 2;//Affichge infos trajets
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+140,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+140,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
         }
+
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+230 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+310)
         {
-            choix = 3;//Sous-menus de création de deck
+            choix = 3;//Lance un Dijkstra
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+225,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+225,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
         }
+
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+315 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+395)
         {
-            choix = 4;//ouverture de la boutique
+            choix = 4;//?????????????
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+310,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+310,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
         }
+
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+400 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+480)
         {
             choix = 5;//Affichage des crédits
@@ -645,15 +649,17 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
             rest(250);
             fin = true;
         }
+
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+485 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+565)
         {
-            choix = 6;//Sous-menu des extensions
+            choix = 6;//Les extras
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+480,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+480,SCREEN_W,SCREEN_H);
             afficher();
             rest(250);
             fin = true;
         }
+
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+570 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+650)
         {
             choix = 7;//Quitter
@@ -675,6 +681,7 @@ void Plan_Pistes::standby()///attente que l'utilisateur clique sur fermer ou app
     //Boutton retour
     rectfill(m_plan, SCREEN_W/2-50, SCREEN_H-45, SCREEN_W/2+50, SCREEN_H, MONTAGNE);
     textout_centre_ex(m_plan, old,"Retour", SCREEN_W/2,SCREEN_H-40, ROUGE_DOUX,-1);
+
     bool fin = false;
     afficher();
     rest(250);

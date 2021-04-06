@@ -1,5 +1,6 @@
 #include "Menus.h"
 #include <fstream>
+#include <iostream>
 
 Menus::Menus(Plan_Pistes p) : m_plan(p)
 {
@@ -36,7 +37,15 @@ bool Menus::principal()///Menu principal du jeu
     }
     case 3:
     {
-        ///On sait pas
+        ///Dijkstra
+        m_plan.effacer();
+        m_plan.setup();
+        int begin, end;
+        std::cout << "saisissez le point de départ et d'arrivé de votre parcours !" << std::endl;
+        std::cin >> begin;
+        std::cin >> end;
+        s.dijkstra(begin,end);
+        m_plan.standby();
         break;
     }
     case 4:
@@ -87,7 +96,7 @@ bool Menus::extras()///Menu des extensions
     bool quit = false;
     m_plan.effacer();
     int choix;
-    choix = 3; //m_plan.menuExtras();//Selection du choix de l'utilisateur et affichage du menu
+    choix = 3;          //m_plan.menuExtras();//Selection du choix de l'utilisateur et affichage du menu
     switch(choix)
     {
     case 1:
