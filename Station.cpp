@@ -132,11 +132,9 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     m_points[depart].setCouleur(1);        //et est marqué comme repéré
     m_points[0].setCouleur(2);             //on met le points 0 qui est fictif à 2
     bool fin = false;
-    ///std::cout<<"TEST1"<<std::endl;
     int boucle = 1;
     do
     {
-        ///std::cout<<"boucle : "<<boucle<<std::endl;
         boucle++;
         int numS = -1;                      //numéro de point
         double dist = INT_MAX;                 //Distance la plus courte au point de départ
@@ -180,7 +178,6 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
             if(elem.getCouleur() != 2) fin = false;             //Vérification de si tous les points ont étés marqués ou non.
         }
     }while(!fin);
-    ///std::cout<<"TEST2"<<std::endl;
     int ante = m_points[arrivee].getDijk();
 
     for(auto& elem:m_points)
@@ -201,7 +198,6 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
         }
         else break;
     }
-    ///std::cout<<"TEST3"<<std::endl;
     ante = arrivee;
     for(auto& elem: m_points)
     {
@@ -246,8 +242,6 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
         }
         elem.setBfs(-1);            //Pour éviter un warning sur la non utilisation de la varible "elem" -> sans effet reel.
     }
-
-    ///RAJOUTER UN MESSAGE EN ALLEGRO
     std::cout<<"Duree poids : " + std::to_string(m_points[arrivee].getDistance())<<std::endl;
     std::cout<<"Duree reele : " + std::to_string(duree)<<std::endl;
     m_plan.descripPistes();
@@ -255,6 +249,12 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     m_plan.standby();
     m_plan.emphase("La duree moyenne de ce chemin est de", m_plan.cutDouble(duree)+" minutes");
     m_plan.standby();
+}
+
+
+void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkerson pour déterminer le flot horaire maximal de skieurs entre deux points
+{
+
 }
 
 void Station::afficher() const       //Affichage du graphe

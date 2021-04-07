@@ -20,6 +20,7 @@ public:
     int getOrdre() const;           //Getter pour l'ordre du graphe
     bool bfs(int depart, int arrivee);      //Algorithme du BFS pour découverte des chemins d'un point à un autre
     void dijkstra(int depart, int arrivee); //Algorithme de Dijkstra pour déterminer le plus court chemin entre deux points précisés
+    void fordFulkerson(int depart, int arrivee);//Algorithme de Ford-Fulkerson pour déterminer le flot horaire maximal de skieurs entre deux points
     void afficher() const;      //Affichage du gaphe
     void resetAttributs();
     void interactif();

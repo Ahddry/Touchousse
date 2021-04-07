@@ -689,8 +689,8 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     propositions.push_back("Infos Trajets");
     propositions.push_back("Plus court chemin");
     propositions.push_back("Choix chemin");
+    propositions.push_back("Flux");
     propositions.push_back("Credits");
-    propositions.push_back("Extras");
     propositions.push_back("Quitter");
     int j=50, choix;
     for(const auto& elem: propositions)//Affichage des choix
