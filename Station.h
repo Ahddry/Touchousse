@@ -27,8 +27,7 @@ public:
     void saisieDijkstra(int& point1, int& point2);
     bool selecArc(Trajet t);
     void preselec(int presel);
-
-
+    void personnalise();
 };
 
 #endif // STATION_H_INCLUDED

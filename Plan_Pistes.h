@@ -39,6 +39,7 @@ public:
     void entreDeux(int depart, int arrivee, std::string type, int x, int y, bool point);
     std::string longType(std::string type) const;
     std::string cutDouble(double nombre);
+    bool personnalise(std::vector<std::pair<std::string,int>>& connex);
 
     void emphase(std::string titre, std::string sousTitre);//Message accentué avec une première chose écrite en gros et une seconde en un peu plus petit en dessous
     int menu(std::string titre, std::vector<std::string> choix, int nbChoix);//menu divers avec choix paramétrables, attendant un clic de l'utilisateur sur une des options proposées

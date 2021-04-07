@@ -481,5 +481,56 @@ void Station::preselec(int presel)
     }
 }
 
+void Station::personnalise()
+{
+    std::vector<std::pair<std::string, int>> resultat;
+    resultat.push_back({"V",0});
+    resultat.push_back({"B",0});
+    resultat.push_back({"R",0});
+    resultat.push_back({"N",0});
+    resultat.push_back({"KL",0});
+    resultat.push_back({"SURF",0});
+    resultat.push_back({"TPH",0});
+    resultat.push_back({"TC",0});
+    resultat.push_back({"TSD",0});
+    resultat.push_back({"TS",0});
+    resultat.push_back({"TK",0});
+    resultat.push_back({"BUS",0});
+    bool quitter = false;
+    while(!quitter)
+    {
+        quitter = m_plan.personnalise(resultat);
+    }
+    for(auto& trajets: m_trajets)
+    {
+        std::string type = trajets.getType();
+        for(const auto& elem: resultat)
+        {
+            if(elem.second == 2)
+            {
+                if(type == elem.first)
+                {
+                    trajets.setSelec(false);
+                }
+                m_ininteret.push_back(elem.first);
+            }
+        }
+    }
+    for(const auto& elem: resultat)
+    {
+        std::cout<<elem.first<<" : "<<elem.second<<std::endl;
+        if(elem.second == 1)
+        {
+            m_ininteret.push_back(elem.first);
+        }
+    }
+    int point1 = 0, point2 = 0;
+    saisieDijkstra(point1, point2);
+    if(bfs(point1, point2))
+    {
+        std::cout<<"TEST"<<std::endl;
+        dijkstra(point1, point2);
+    }
+}
 
 

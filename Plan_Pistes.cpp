@@ -11,6 +11,7 @@
 
 #define ROUGE_DOUX makecol(255,50,50)
 #define ROUGE_FONCE makecol(162,0,24)
+#define VERT_FONCE makecol(14, 209, 69)
 #define SOUS_TITRE makecol(112,146,190)
 #define MONTAGNE makecol(200,210,220)
 
@@ -376,6 +377,96 @@ std::string Plan_Pistes::cutDouble(double nombre)
     return poids;
 }
 
+
+bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
+{
+    FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
+    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
+    FONT *old = load_font("Fonts/Normal.pcx",NULL,NULL);
+    effacer();
+    setup();
+    //Titre centré
+    textout_centre_ex(m_plan, MiddleTitle,"Selection personnalisee", SCREEN_W/2,40, ROUGE_DOUX,-1);
+    textout_centre_ex(m_plan, SubTitle,"de votre trajet preferentiel", SCREEN_W/2,120, SOUS_TITRE,-1);
+
+    std::string explication = "Cliquez sur les cases correspondantes aux types de trajets pour changer leurs presences dans votre trajet preferentiel.";
+    textout_centre_ex(m_plan, old,explication.c_str(), SCREEN_W/2,200, SOUS_TITRE,-1);
+    std::vector<std::pair<int, int>> coords;
+    int couleur = 0;
+    std::string texte = "";
+    int x = 120, y = 320;
+    unsigned int i = 0;
+    for(const auto& elem:connex)
+    {
+        if(i==connex.size()/2)
+        {
+            x+=810;
+            y=320;
+        }
+        entreDeux(1, 2, elem.first, x, y, true);
+        int x2 = x+400;
+        if(elem.second == 0)
+        {
+            couleur = VERT_FONCE;
+            texte = "AVEC";
+        }
+        else if(elem.second == 1)
+        {
+            couleur = makecol(255, 127, 39);
+            texte = "EVITER";
+        }
+        else if(elem.second == 2)
+        {
+            couleur = ROUGE;
+            texte = "SANS";
+        }
+        rectfill(m_plan, x2-50, y-25, x2+150, y+25, couleur);
+        textout_centre_ex(m_plan, old,texte.c_str(), x2+50, y-15, makecol(48,48,48),-1);
+        coords.push_back({x2+50, y});
+        y+=70;
+        i++;
+    }
+
+    rectfill(m_plan, SCREEN_W/2-50, SCREEN_H-45, SCREEN_W/2+50, SCREEN_H, VERT_FONCE);
+    textout_centre_ex(m_plan, old,"Confirmer", SCREEN_W/2,SCREEN_H-40, NOIR,-1);
+    afficher();
+
+    int xSouris = 0, ySouris = 0;
+    bool clic = false, fin = false, quitter = false;
+    while(!fin)
+    {
+        clic = false;
+        while(!clic)
+        {
+            if(mouse_b&1)
+            {
+                xSouris = mouse_x;
+                ySouris = mouse_y;
+                clic = true;
+            }
+        }
+        for(unsigned int i = 0; i<coords.size(); i++)
+        {
+            if (xSouris>=coords[i].first-100 && ySouris>=coords[i].second-25 && xSouris<=coords[i].first+100 && ySouris<=coords[i].second+25)
+            {
+                rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
+                connex[i].second++;
+                if(connex[i].second == 3)
+                    connex[i].second = 0;
+                fin = true;
+                break;
+            }
+            if ( mouse_b&1 && mouse_x>=SCREEN_W/2-50 && mouse_y>=SCREEN_H-50 && mouse_x<=SCREEN_W/2+50 &&mouse_y<=SCREEN_H && !fin)
+            {
+                fin=true;
+                quitter = true;
+                break;
+            }
+        }
+    }
+
+    return quitter;
+}
 
 void Plan_Pistes::emphase(std::string titre, std::string sousTitre)
 {   ///Message accentué avec une première chose écrite en gros et une seconde en un peu plus petit en dessous

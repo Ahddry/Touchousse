@@ -120,7 +120,8 @@ bool Menus::cheminInterressant(Station s)    ///Menu du choix des chemins en fon
         ///En choisissant quels trajets banir
         m_plan.setup();
         m_plan.emphase("Trajet personnalise", "Choississez quels types de trajets vous desirez");
-
+        rest(1200);
+        s.personnalise();
         break;
     }
     case 3 :
