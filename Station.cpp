@@ -88,7 +88,11 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
         for(auto& elem:m_points)
         {
             if(elem.getBfs()==-1)
+            {
                 elem.setSelectDijk(false);
+                //std::cout<<"Mise a faux du point : "<<elem.getNum()<<std::endl;
+            }
+
         }
         m_points[depart].setSelectDijk(true);
         if(m_points[arrivee].getBfs()==-1)
@@ -118,7 +122,11 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     for(auto& elem:m_points)                   //Mise à blanc des points
     {
         elem.setCouleur(0);
-        if(!elem.getSelectDijk()) elem.setCouleur(2);
+        if(!elem.getSelectDijk())
+        {
+            elem.setCouleur(2);
+            //std::cout<<"Mise a NOIR du point : "<<elem.getNum()<<std::endl;
+        }
     }
     m_points[depart].setDistance(0);       //Le point de départ a une distance de 0
     m_points[depart].setCouleur(1);        //et est marqué comme repéré
@@ -282,6 +290,10 @@ void Station::resetAttributs()
     {
         elem.setSelec(true);
         elem.setInteret(true);
+    }
+    while(!m_ininteret.empty())
+    {
+        m_ininteret.pop_back();
     }
 }
 
@@ -473,7 +485,6 @@ void Station::preselec(int presel)
             saisieDijkstra(point1, point2);
             if(bfs(point1, point2))
             {
-                std::cout<<"TEST"<<std::endl;
                 dijkstra(point1, point2);
             }
             break;
@@ -518,7 +529,7 @@ void Station::personnalise()
     }
     for(const auto& elem: resultat)
     {
-        std::cout<<elem.first<<" : "<<elem.second<<std::endl;
+        //std::cout<<elem.first<<" : "<<elem.second<<std::endl;
         if(elem.second == 1)
         {
             m_ininteret.push_back(elem.first);
@@ -528,7 +539,6 @@ void Station::personnalise()
     saisieDijkstra(point1, point2);
     if(bfs(point1, point2))
     {
-        std::cout<<"TEST"<<std::endl;
         dijkstra(point1, point2);
     }
 }

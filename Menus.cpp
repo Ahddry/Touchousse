@@ -39,6 +39,7 @@ bool Menus::principal()///Menu principal du jeu
     case 3:
     {
         ///Dijkstra
+        s.resetAttributs();
         m_plan.effacer();
         m_plan.setup();
         int point1, point2;
@@ -103,6 +104,7 @@ bool Menus::cheminInterressant(Station s)    ///Menu du choix des chemins en fon
     {
     case 1:
     {
+        s.resetAttributs();
         ///En utilisant des pré-selections
         std::string titre = "Veuillez choisir votre preselection de chemin";
         std::vector<std::string> choix;
@@ -117,6 +119,7 @@ bool Menus::cheminInterressant(Station s)    ///Menu du choix des chemins en fon
     }
     case 2:
     {
+        s.resetAttributs();
         ///En choisissant quels trajets banir
         m_plan.setup();
         m_plan.emphase("Trajet personnalise", "Choississez quels types de trajets vous desirez");
