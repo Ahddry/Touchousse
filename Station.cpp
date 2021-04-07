@@ -85,6 +85,12 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
                 else break;
             }
         }
+        for(auto& elem:m_points)
+        {
+            if(elem.getBfs()==-1)
+                elem.setSelectDijk(false);
+        }
+        m_points[depart].setSelectDijk(true);
         if(m_points[arrivee].getBfs()==-1)
         {
             m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
@@ -234,8 +240,8 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     }
 
     ///RAJOUTER UN MESSAGE EN ALLEGRO
-    //std::cout<<"Duree poids : " + std::to_string(m_points[arrivee].getDistance())<<std::endl;
-    //std::cout<<"Duree reele : " + std::to_string(duree)<<std::endl;
+    std::cout<<"Duree poids : " + std::to_string(m_points[arrivee].getDistance())<<std::endl;
+    std::cout<<"Duree reele : " + std::to_string(duree)<<std::endl;
     m_plan.descripPistes();
     m_plan.afficher();
     m_plan.standby();
@@ -452,6 +458,7 @@ void Station::preselec(int presel)
         }
     case 4:
         {///CA CRASH POUR L'INSTANT
+
             for(auto& elem:m_trajets)
             {
                 std::string type = elem.getType();
