@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <utility>
 
+
 Station::Station(Plan_Pistes p) : m_plan(p)
 {
     std::string fichier = "data_arcs.txt";
@@ -31,6 +32,7 @@ Station::Station(Plan_Pistes p) : m_plan(p)
         m_points[a].ajoutAnte(trj);
         m_trajets.push_back(trj);
     }
+    m_testAffichage = true;
 }
 
 Station::~Station(){}
@@ -42,6 +44,7 @@ int Station::getOrdre() const    //getter pour l'ordre du graphe
 
 bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
 {
+    resetBfs();
     if(depart<1) m_plan.erreur("Le numero de point choisit pour commencer est invalide.");
     else
     {
@@ -97,13 +100,17 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
         m_points[depart].setSelectDijk(true);
         if(m_points[arrivee].getBfs()==-1)
         {
-            m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
+            if(m_testAffichage) m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
             return false;
         }
-        else return true;
+        else
+        {
+            return true;
+        }
     }
-    m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
+    if(m_testAffichage) m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
     return false;
+
 }
 
 class TestPoids
@@ -254,7 +261,56 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
 
 void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkerson pour déterminer le flot horaire maximal de skieurs entre deux points
 {
+    m_testAffichage = false;
+    int flowMax = 0;
+    int flowMin = 0;
+    int p = 0;
+    int anteBfs;
+    while(bfs(depart,arrivee))
+    {
+        p++;
+        flowMin = INT_MAX;
+        for(unsigned int i = arrivee; i!=depart; i = anteBfs)
+        {
+            anteBfs = m_points[i].getBfs();
+            if(anteBfs!=(-1))
+            {
+                for(auto& elem:m_trajets)
+                {
+                    if(elem.getDepart() == anteBfs && elem.getArrivee() == i && elem.getSelec())
+                    {
+                        int capres = elem.getCapacite()-elem.getFlux();
+                        flowMin = std::min(flowMin, capres);
+                    }
+                }
+            }
 
+        }
+        for(unsigned int i = arrivee; i!=depart; i = anteBfs)
+        {
+            anteBfs = m_points[i].getBfs();
+            if(anteBfs!=(-1))
+            {
+                for(auto& elem:m_trajets)
+                {
+                    if(elem.getDepart() == anteBfs && elem.getArrivee() == i && elem.getSelec())
+                    {
+                        elem.setFlux(elem.getFlux()+ flowMin);
+                        if(elem.getFlux()>=elem.getCapacite())
+                        {
+                            elem.setSelec(false);
+                        }
+                    }
+
+                }
+            }
+
+        }
+        flowMax += flowMin;
+        resetBfs();
+    }
+    std::cout << flowMax << std::endl;
+    m_testAffichage = true;
 }
 
 void Station::afficher() const       //Affichage du graphe
@@ -290,6 +346,7 @@ void Station::resetAttributs()
     {
         elem.setSelec(true);
         elem.setInteret(true);
+        elem.setFlux(0);
     }
     while(!m_ininteret.empty())
     {
@@ -297,6 +354,14 @@ void Station::resetAttributs()
     }
 }
 
+void Station::resetBfs()
+{
+    for(auto& elem:m_points)
+    {
+        elem.setCouleur(0);         //Mise à l'état 0 de la couleur
+        elem.setBfs(-1);            //Mise à -1 (aucun) de l'antécédant
+    }
+}
 
 class Comparaison
 {
@@ -542,5 +607,7 @@ void Station::personnalise()
         dijkstra(point1, point2);
     }
 }
+
+
 
 

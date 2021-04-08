@@ -14,6 +14,7 @@ private:
     std::vector<Trajet> m_trajets;  //tableaux contenant tous les points
     std::vector<std::string> m_ininteret; //Liste des types de connexion de peu d'intérêt pour le skieur
     Plan_Pistes m_plan; //Objet de l'affichage graphique
+    bool m_testAffichage;
 public:
     Station(Plan_Pistes p);    //Constructeur du graphe prenant le chemin du fichier txt contenant le graphe en paramètres
     ~Station();
@@ -23,6 +24,7 @@ public:
     void fordFulkerson(int depart, int arrivee);//Algorithme de Ford-Fulkerson pour déterminer le flot horaire maximal de skieurs entre deux points
     void afficher() const;      //Affichage du gaphe
     void resetAttributs();
+    void resetBfs();
     void interactif();
     void arc();
     void saisieDijkstra(int& point1, int& point2);

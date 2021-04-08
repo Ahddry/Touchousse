@@ -82,6 +82,19 @@ bool Menus::principal()///Menu principal du jeu
         break;
     }
     case 6:
+    {
+        s.resetAttributs();
+        m_plan.effacer();
+        m_plan.setup();
+        int point1, point2;
+        s.saisieDijkstra(point1, point2);
+        if(s.bfs(point1, point2))
+        {
+            s.fordFulkerson(point1, point2);
+        }
+        s.resetAttributs();
+        break;
+    }
 
     case 7 :
         ///Quitter
