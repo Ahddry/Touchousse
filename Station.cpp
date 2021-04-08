@@ -270,7 +270,7 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
     {
         p++;
         flowMin = INT_MAX;
-        for(unsigned int i = arrivee; i!=depart; i = anteBfs)
+        for(int i = arrivee; i!=depart; i = anteBfs)
         {
             anteBfs = m_points[i].getBfs();
             if(anteBfs!=(-1))
@@ -286,7 +286,7 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
             }
 
         }
-        for(unsigned int i = arrivee; i!=depart; i = anteBfs)
+        for(int i = arrivee; i!=depart; i = anteBfs)
         {
             anteBfs = m_points[i].getBfs();
             if(anteBfs!=(-1))
@@ -309,7 +309,9 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
         flowMax += flowMin;
         resetBfs();
     }
-    std::cout << flowMax << std::endl;
+    m_plan.setup();
+    m_plan.emphase("Le flux horaire maximal est de " + std::to_string(flowMax), "Entre les points " + m_points[depart].getLieu() + " et " + m_points[arrivee].getLieu());
+    m_plan.standby();
     m_testAffichage = true;
 }
 
@@ -524,6 +526,7 @@ void Station::preselec(int presel)
         }
     case 3:
         {
+            resetAttributs();
             m_ininteret.push_back("B");
             m_ininteret.push_back("BUS");
             saisieDijkstra(point1, point2);

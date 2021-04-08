@@ -67,6 +67,7 @@ void Plan_Pistes::setup()///affichage des éléments de base d'une partie
     circlefill(m_plan, 35, 25, 15, NOIR);
     floodfill(m_plan, SCREEN_W/2, 23, NOIR);
     rectfill(m_plan, 27.5, 25, SCREEN_W-27.5, SCREEN_H-25, MONTAGNE);
+    rectfill(m_plan, SCREEN_W/2-80, SCREEN_H-15, SCREEN_W/2+80, SCREEN_H, NOIR);
     afficher();
 }
 
@@ -269,10 +270,10 @@ void Plan_Pistes::infoPoint(Point point)
     emphase("Informations sur le point", point.getLieu());
     rest(1200);
     setup();
-
+    std::string lePoint = point.getLieu() + " - Altitude : " + std::to_string(point.getAlt()) + "m";
     //Titre centré
     textout_centre_ex(m_plan, MiddleTitle,"Informations sur le point", SCREEN_W/2,40, ROUGE_DOUX,-1);
-    textout_centre_ex(m_plan, SubTitle,point.getLieu().c_str(), SCREEN_W/2,120, SOUS_TITRE,-1);
+    textout_centre_ex(m_plan, SubTitle,lePoint.c_str(), SCREEN_W/2,120, SOUS_TITRE,-1);
 
     circle(m_plan, 125, 130, 50, NOIR);
     textout_centre_ex(m_plan, MiddleTitle, std::to_string(point.getNum()).c_str(), 125, 90, NOIR, -1);
@@ -631,24 +632,18 @@ void Plan_Pistes::regles(std::vector<std::string> regles)//affichage des règles 
     //Chargement des polices
     FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
     FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
-
-    //Chargement de la banière de titre et affichage du titre
-    BITMAP* baniere = load_bitmap_check("Graphics/Menu.bmp");
-    masked_blit(baniere,m_plan,0,0,SCREEN_W/2-566,0,SCREEN_W,SCREEN_H);
-    textout_centre_ex(m_plan, MainTitle,"Batailles        d'Etats", SCREEN_W/2,SCREEN_H/4-75, makecol(255,200,0),-1);
-    textout_centre_ex(m_plan, MainTitle," & coups", SCREEN_W/2+7,SCREEN_H/4-90, makecol(255,200,0),-1);
-    //Affichage du panneau
-    //BITMAP* planche = load_bitmap_check("img/regles.bmp");
-    //masked_blit(planche,m_plan,0,220,SCREEN_W/2-750,0,SCREEN_W,SCREEN_H);
+    setup();
+    //Affichage du titre
+    textout_centre_ex(m_plan, MainTitle,"Touchousse", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
     int j = 25, w = j;
     for(const auto& elem:regles)//Affichage du texte donné
     {
-        textout_centre_ex(m_plan, old,elem.c_str(), SCREEN_W/2, SCREEN_H/4+20+w, makecol(255,255,255),-1);
+        textout_centre_ex(m_plan, old,elem.c_str(), SCREEN_W/2, SCREEN_H/4+20+w, ROUGE_FONCE,-1);
         w+=j;
     }
     //Boutton retour
-    rectfill(m_plan, 25, SCREEN_H-80, 125, SCREEN_H-25, makecol(160,108,61));
-    textout_centre_ex(m_plan, old,"Retour", 75,SCREEN_H-75, makecol(200,200,200),-1);
+    rectfill(m_plan, 25, SCREEN_H-80, 125, SCREEN_H-25, ROUGE_FONCE);
+    textout_centre_ex(m_plan, old,"Retour", 75,SCREEN_H-75, MONTAGNE,-1);
     bool fin = false;
     afficher();
     while(!fin)//Attends que l'utilisateur appuie sur retour ou sur sa touche [ECHAP]
@@ -678,11 +673,11 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     masked_blit(baniere,m_plan,0,0,0,0,SCREEN_W,SCREEN_H);
 
     //Chargement des polices
-    //FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
+    FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
 
     //Affichage du titre du jeu
-    textout_centre_ex(m_plan, MiddleTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
+    textout_centre_ex(m_plan, MainTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
 
     std::vector<std::string> propositions;//Ajout des choix à afficher
     propositions.push_back("Plan interactif");
@@ -787,11 +782,11 @@ int Plan_Pistes::menuExtras()///Menu des extensions du jeu, attendant un clic de
     masked_blit(baniere,m_plan,0,0,0,0,SCREEN_W,SCREEN_H);
 
     //Chargement des polices
-    //FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
+    FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
 
     //Affichage du titre du jeu
-    textout_centre_ex(m_plan, MiddleTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
+    textout_centre_ex(m_plan, MainTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
 
     std::vector<std::string> propositions;//Ajout des choix à afficher
     propositions.push_back("Pre-definis");

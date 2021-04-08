@@ -63,6 +63,22 @@ bool Menus::principal()///Menu principal du jeu
     }
     case 5:
     {
+        ///Algorithme de flow (Ford-Fulkerson)
+        s.resetAttributs();
+        m_plan.effacer();
+        m_plan.setup();
+        int point1, point2;
+        s.saisieDijkstra(point1, point2);
+        if(s.bfs(point1, point2))
+        {
+            s.fordFulkerson(point1, point2);
+        }
+        s.resetAttributs();
+        break;
+
+    }
+    case 6:
+    {
         ///Crédits
         std::vector<std::string> credits;
         std::ifstream fichierCredits("Credits.txt");//ouverture d'un flux de lecture vers le fichier des crédits
@@ -79,20 +95,6 @@ bool Menus::principal()///Menu principal du jeu
         {
             m_plan.erreur("Erreur: Le fichier n'existe pas!");
         }
-        break;
-    }
-    case 6:
-    {
-        s.resetAttributs();
-        m_plan.effacer();
-        m_plan.setup();
-        int point1, point2;
-        s.saisieDijkstra(point1, point2);
-        if(s.bfs(point1, point2))
-        {
-            s.fordFulkerson(point1, point2);
-        }
-        s.resetAttributs();
         break;
     }
 
