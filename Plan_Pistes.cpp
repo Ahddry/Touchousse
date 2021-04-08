@@ -469,6 +469,199 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
     return quitter;
 }
 
+bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
+{
+    FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
+    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
+    FONT *old = load_font("Fonts/Normal.pcx",NULL,NULL);
+    effacer();
+    setup();
+    //Titre centré
+    textout_centre_ex(m_plan, MiddleTitle,"Ouverture/Fermeture des pistes", SCREEN_W/2,40, ROUGE_DOUX,-1);
+    textout_centre_ex(m_plan, SubTitle,"panneau d'administration general", SCREEN_W/2,120, SOUS_TITRE,-1);
+    std::string explication = "Cliquez sur les cases correspondantes aux types de trajets pour toutes les ouvrir ou fermer au public.";
+    textout_centre_ex(m_plan, old,explication.c_str(), SCREEN_W/2,200, SOUS_TITRE,-1);
+    std::vector<std::pair<int, int>> coords;
+    int couleur = 0;
+    std::string texte = "";
+    int x = 120, y = 320;
+    unsigned int i = 0;
+    for(const auto& elem:connex)
+    {
+        if(i==connex.size()/2)
+        {
+            x+=810;
+            y=320;
+        }
+        entreDeux(1, 2, elem.first, x, y, true);
+        int x2 = x+400;
+        if(elem.second == true)
+        {
+            couleur = VERT_FONCE;
+            texte = "OUVERTES";
+        }
+        else if(elem.second == false)
+        {
+            couleur = ROUGE;
+            texte = "FERMEES";
+        }
+        rectfill(m_plan, x2-50, y-25, x2+150, y+25, couleur);
+        textout_centre_ex(m_plan, old,texte.c_str(), x2+50, y-15, makecol(48,48,48),-1);
+        coords.push_back({x2+50, y});
+        y+=70;
+        i++;
+    }
+
+    rectfill(m_plan, SCREEN_W/2-50, SCREEN_H-45, SCREEN_W/2+50, SCREEN_H, VERT_FONCE);
+    textout_centre_ex(m_plan, old,"Confirmer", SCREEN_W/2,SCREEN_H-40, NOIR,-1);
+    afficher();
+
+    int xSouris = 0, ySouris = 0;
+    bool clic = false, fin = false, quitter = false;
+    while(!fin)
+    {
+        clic = false;
+        while(!clic)
+        {
+            if(mouse_b&1)
+            {
+                xSouris = mouse_x;
+                ySouris = mouse_y;
+                clic = true;
+            }
+        }
+        for(unsigned int i = 0; i<coords.size(); i++)
+        {
+            if (xSouris>=coords[i].first-100 && ySouris>=coords[i].second-25 && xSouris<=coords[i].first+100 && ySouris<=coords[i].second+25)
+            {
+                rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
+                if(connex[i].second == true)
+                    connex[i].second = false;
+                else connex[i].second = true;
+                fin = true;
+                break;
+            }
+            if ( mouse_b&1 && mouse_x>=SCREEN_W/2-50 && mouse_y>=SCREEN_H-50 && mouse_x<=SCREEN_W/2+50 &&mouse_y<=SCREEN_H && !fin)
+            {
+                fin=true;
+                quitter = true;
+                break;
+            }
+        }
+    }
+
+    return quitter;
+}
+
+bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
+{
+    FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
+    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
+    FONT *old = load_font("Fonts/Normal.pcx",NULL,NULL);
+    effacer();
+    setup();
+    //Titre centré
+    textout_centre_ex(m_plan, MiddleTitle,"Ouverture/Fermeture des pistes", SCREEN_W/2,40, ROUGE_DOUX,-1);
+    textout_centre_ex(m_plan, SubTitle,"panneau d'administration general", SCREEN_W/2,120, SOUS_TITRE,-1);
+    std::string explication = "Cliquez sur les cases correspondantes aux types de trajets pour toutes les ouvrir ou fermer au public.";
+    textout_centre_ex(m_plan, old,explication.c_str(), SCREEN_W/2,200, SOUS_TITRE,-1);
+    std::vector<std::pair<int, int>> coords;
+    int couleur = 0;
+    std::string texte = "";
+    int x = 120 - 1600*(page-1), y = 320;
+    unsigned int i = 0;
+    for(const auto& elem:trajets)
+    {
+        if(i%7==0 && i!=0)
+        {
+            x+=800;
+            y=320;
+        }
+        textout_right_ex(m_plan, old,(std::to_string(elem.getNum()) + " :").c_str(), x-35, y-17, SOUS_TITRE,-1);
+        entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true);
+        std::cout<<"Affichage : "<<elem.getDepart()<<"->"<<elem.getArrivee()<<" "<<elem.getType()<<std::endl;
+        int x2 = x+400;
+        if(elem.getActive() == true)
+        {
+            couleur = VERT_FONCE;
+            texte = "OUVERTES";
+        }
+        else if(elem.getActive() == false)
+        {
+            couleur = ROUGE;
+            texte = "FERMEES";
+        }
+        rectfill(m_plan, x2-50, y-25, x2+150, y+25, couleur);
+        textout_centre_ex(m_plan, old,texte.c_str(), x2+50, y-15, makecol(48,48,48),-1);
+        coords.push_back({x2+50, y});
+        y+=70;
+        i++;
+    }
+
+    rectfill(m_plan, SCREEN_W/2-50, SCREEN_H-45, SCREEN_W/2+50, SCREEN_H, VERT_FONCE);
+    textout_centre_ex(m_plan, old,"Confirmer", SCREEN_W/2,SCREEN_H-40, NOIR,-1);
+    if(page>1)
+    {
+        rectfill(m_plan, 27.5, SCREEN_H-70, 185, SCREEN_H-25, makecol(255, 127, 39));
+        textout_ex(m_plan, old,"Page precedente", 32,SCREEN_H-65, NOIR,-1);
+    }
+    if(page<7)
+    {
+        rectfill(m_plan, SCREEN_W-160, SCREEN_H-70, SCREEN_W-27.5, SCREEN_H-25, makecol(255, 127, 39));
+        textout_right_ex(m_plan, old,"Page suivante", SCREEN_W-32,SCREEN_H-65, NOIR,-1);
+    }
+    afficher();
+
+    int xSouris = 0, ySouris = 0;
+    bool clic = false, fin = false, quitter = false;
+    while(!fin)
+    {
+        clic = false;
+        while(!clic)
+        {
+            if(mouse_b&1)
+            {
+                xSouris = mouse_x;
+                ySouris = mouse_y;
+                clic = true;
+            }
+        }
+        for(unsigned int i = 0; i<coords.size(); i++)
+        {
+            if (xSouris>=coords[i].first-100 && ySouris>=coords[i].second-25 && xSouris<=coords[i].first+100 && ySouris<=coords[i].second+25)
+            {
+                rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
+                if(trajets[i].getActive() == true)
+                    trajets[i].setActive(false);
+                else trajets[i].setActive(true);
+                fin = true;
+                break;
+            }
+            if ( mouse_b&1 && mouse_x>=27.5 && mouse_y>=SCREEN_H-70 && mouse_x<=185 &&mouse_y<=SCREEN_H-25 && !fin && page>1)
+            {
+                fin=true;
+                page--;
+                break;
+            }
+            if ( mouse_b&1 && mouse_x>=SCREEN_W-160 && mouse_y>=SCREEN_H-70 && mouse_x<=SCREEN_W-27.5 &&mouse_y<=SCREEN_H-25 && !fin && page<7)
+            {
+                fin=true;
+                page++;
+                break;
+            }
+            if ( mouse_b&1 && mouse_x>=SCREEN_W/2-50 && mouse_y>=SCREEN_H-50 && mouse_x<=SCREEN_W/2+50 &&mouse_y<=SCREEN_H && !fin)
+            {
+                fin=true;
+                quitter = true;
+                break;
+            }
+        }
+    }
+
+    return quitter;
+}
+
+
 void Plan_Pistes::emphase(std::string titre, std::string sousTitre)
 {   ///Message accentué avec une première chose écrite en gros et une seconde en un peu plus petit en dessous
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
@@ -685,7 +878,7 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     propositions.push_back("Plus court chemin");
     propositions.push_back("Choix chemin");
     propositions.push_back("Flux");
-    propositions.push_back("Credits");
+    propositions.push_back("Extras");
     propositions.push_back("Quitter");
     int j=50, choix;
     for(const auto& elem: propositions)//Affichage des choix
@@ -770,8 +963,70 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     }
     return choix;
 }
+int Plan_Pistes::menuExtras()///Menu des extensions de l'application, attendant un clic de l'utilisateur sur une des options proposées
+{
+    effacer();
+    //Chargement des images
+    BITMAP* baniere = load_bitmap_check("Graphics/Menu.bmp");
+    BITMAP* arrow1 = load_bitmap_check("Graphics/arrow1.bmp");
+    BITMAP* arrow2 = load_bitmap_check("Graphics/arrow2.bmp");
+    blit(m_background,m_plan,0,0,0,0,SCREEN_W,SCREEN_H);
+    masked_blit(baniere,m_plan,0,0,0,0,SCREEN_W,SCREEN_H);
 
-int Plan_Pistes::menuExtras()///Menu des extensions du jeu, attendant un clic de l'utilisateur sur une des options proposées
+    //Chargement des polices
+    FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
+    FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
+
+    //Affichage du titre du jeu
+    textout_centre_ex(m_plan, MainTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
+
+    std::vector<std::string> propositions;//Ajout des choix à afficher
+    propositions.push_back("Fonctions Admin");
+    propositions.push_back("Credits");
+    propositions.push_back("Retour");
+    int j=50, choix;
+    for(const auto& elem: propositions)//Affichage des choix
+    {
+        textout_centre_ex(m_plan, MiddleTitle,elem.c_str(), SCREEN_W/2,SCREEN_H/4+j, ROUGE_DOUX,-1);
+        j+=85;
+    }
+    bool fin = false;
+    afficher();
+    while (!fin)//Attente que l'utilisateur fasse son choix
+    {
+
+        if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+50 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+140)
+        {
+            choix = 1;//Sous-menu de créateur de carted
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+55,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+55,SCREEN_W,SCREEN_H);
+            afficher();
+            rest(250);
+            fin = true;
+        }
+        if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+145 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+225)
+        {
+            choix = 2;//Affichage des 7 meilleurs joueurs du jeu
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+140,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+140,SCREEN_W,SCREEN_H);
+            afficher();
+            rest(250);
+            fin = true;
+        }
+        if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+230 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+310)
+        {
+            choix = 3;//retour au menu principal
+            masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+225,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
+            masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+225,SCREEN_W,SCREEN_H);
+            afficher();
+            rest(250);
+            fin = true;
+        }
+    }
+    return choix;
+}
+
+int Plan_Pistes::menuPersonalisation()///Menu de personalisation des trajets proposés, attendant un clic de l'utilisateur sur une des options proposées
 {
     effacer();
     //Chargement des images
@@ -833,7 +1088,6 @@ int Plan_Pistes::menuExtras()///Menu des extensions du jeu, attendant un clic de
     }
     return choix;
 }
-
 
 
 void Plan_Pistes::standby()///attente que l'utilisateur clique sur fermer ou appuie sur [ECHAP]

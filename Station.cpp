@@ -26,10 +26,21 @@ Station::Station(Plan_Pistes p) : m_plan(p)
     {
         int num, d, a;
         std::string nom, type;
-        ifs>>num>>nom>>type>>d>>a;      ///CALCUL DES DISTANCES NECESSAIRE
+        bool active;
+        ifs>>num>>nom>>type>>d>>a>>active;
         Trajet trj(num, nom, type, d, a, m_points[d].getAlt(), m_points[a].getAlt());
-        m_points[d].ajoutSuiv(trj);
-        m_points[a].ajoutAnte(trj);
+        ///std::cout<<num<<":"<<active<<std::endl;
+        if(active)
+        {
+            m_points[d].ajoutSuiv(trj);
+            m_points[a].ajoutAnte(trj);
+            trj.setActive(true);
+        }
+        else
+        {
+            trj.setSelec(false);
+            trj.setActive(false);
+        }
         m_trajets.push_back(trj);
     }
     m_testAffichage = true;
@@ -258,17 +269,30 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     m_plan.standby();
 }
 
+class Comparaison
+{
+public:
+    int operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
+    {
+        if(t1.getArrivee()==t2.getArrivee())
+            return t1.getDepart() > t2.getDepart(); //En cas de même poids, tri par ordre croissant du nombre de départ
+        return t1.getArrivee() > t2.getArrivee();       //Comparaison du poids d'une arête à celui d'une autre
+    }
+};
 
 void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkerson pour déterminer le flot horaire maximal de skieurs entre deux points
 {
+    m_plan.setup();
     m_testAffichage = false;
-    int flowMax = 0;
-    int flowMin = 0;
-    int p = 0;
-    int anteBfs;
+    int flowMax = 0, flowMin = 0;
+    int anteBfs, compteur = 0;
+    std::priority_queue<Trajet, std::vector<Trajet>, Comparaison> file; //File de priorité des arêtes pondérées, triées par ordre croissant de point d'arrivée
+    std::vector<Trajet> testDoublons;
+    std::vector<Trajet> testDoublons2;
+    std::vector<Trajet> sature;
+    m_plan.point(m_points[depart]);
     while(bfs(depart,arrivee))
     {
-        p++;
         flowMin = INT_MAX;
         for(int i = arrivee; i!=depart; i = anteBfs)
         {
@@ -281,6 +305,8 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
                     {
                         int capres = elem.getCapacite()-elem.getFlux();
                         flowMin = std::min(flowMin, capres);
+                        testDoublons.push_back(elem);
+                        m_plan.point(m_points[i]);
                     }
                 }
             }
@@ -299,6 +325,7 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
                         if(elem.getFlux()>=elem.getCapacite())
                         {
                             elem.setSelec(false);
+                            sature.push_back(elem);
                         }
                     }
 
@@ -309,30 +336,54 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
         flowMax += flowMin;
         resetBfs();
     }
-    m_plan.setup();
+    std::vector<std::pair<int,int>> arrivees;
+    for(auto& elem :testDoublons)
+    {
+        bool doublon = false;
+        for(auto& traj: testDoublons2)
+        {
+            if(elem.getDepart()==traj.getDepart() && elem.getArrivee()==traj.getArrivee() && elem.getType()==traj.getType())
+                doublon = true;
+        }
+        if(!doublon)
+            testDoublons2.push_back(elem);
+    }
+    for(auto& elem:testDoublons2)
+    {
+        file.push(elem);
+    }
+    while(!file.empty())
+    {
+        compteur = 0;
+        Trajet t = file.top();
+        std::pair<int, int> connex = {t.getDepart(), t.getArrivee()};
+        for(const auto& point:arrivees)
+        {
+            if(connex.first == point.first && connex.second==point.second) compteur++;
+            if(connex.first == point.second && connex.second==point.first) compteur++;
+        }
+        m_plan.trajet(t, m_points[t.getDepart()], m_points[t.getArrivee()], compteur);
+
+        compteur = 0;
+        arrivees.push_back(connex);
+        file.pop();
+    }
     m_plan.emphase("Le flux horaire maximal est de " + std::to_string(flowMax), "Entre les points " + m_points[depart].getLieu() + " et " + m_points[arrivee].getLieu());
+    m_plan.standby();
+    m_plan.effacer();
+    m_plan.setup();
+    for(auto& elem:sature)
+    {
+        elem.setSelec(true);
+        m_plan.trajet(elem, m_points[elem.getDepart()], m_points[elem.getArrivee()], 0);
+        m_plan.point(m_points[elem.getDepart()]);
+        m_plan.point(m_points[elem.getArrivee()]);
+    }
+    m_plan.emphase("Ces trajets sont satures", "Il faudrait si possible augmenter leur capacite horaire");
     m_plan.standby();
     m_testAffichage = true;
 }
 
-void Station::afficher() const       //Affichage du graphe
-{
-    std::cout<<"Ordre = "<< m_ordre<<std::endl;
-    std::cout<<"Listes d'adjacence :"<<std::endl;
-    for(unsigned int i=1; i<m_points.size(); i++)
-    {
-        std::string lieu = m_points[i].getLieu();
-        int a = atoi(lieu.c_str());
-        if(a==0) std::cout<<lieu<<" : "<<std::endl;
-        else std::cout<<"Point "<<m_points[i].getNum()<<" : "<<std::endl;
-        std::cout<<"Antecedants : ";
-        for(const auto& elem: m_points[i].getAnte()) std::cout<<elem.getDepart()<<" : "<<m_points[elem.getDepart()].getLieu()<<" | ";
-        std::cout<<"\nSuivants : ";
-        for(const auto& elem: m_points[i].getSuiv()) std::cout<<elem.getArrivee()<<" : "<<m_points[elem.getArrivee()].getLieu()<<" | ";
-        std::cout<<"\nAltitude : "<<m_points[i].getAlt();
-        std::cout<<std::endl<<std::endl;
-    }
-}
 
 void Station::resetAttributs()
 {
@@ -349,6 +400,10 @@ void Station::resetAttributs()
         elem.setSelec(true);
         elem.setInteret(true);
         elem.setFlux(0);
+        if(!elem.getActive())
+        {
+            elem.setSelec(false);
+        }
     }
     while(!m_ininteret.empty())
     {
@@ -364,17 +419,6 @@ void Station::resetBfs()
         elem.setBfs(-1);            //Mise à -1 (aucun) de l'antécédant
     }
 }
-
-class Comparaison
-{
-public:
-    int operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
-    {
-        if(t1.getArrivee()==t2.getArrivee())
-            return t1.getDepart() > t2.getDepart(); //En cas de même poids, tri par ordre croissant du nombre de départ
-        return t1.getArrivee() > t2.getArrivee();       //Comparaison du poids d'une arête à celui d'une autre
-    }
-};
 
 void Station::interactif()
 {
@@ -611,6 +655,221 @@ void Station::personnalise()
     }
 }
 
+void Station::adminPanel(bool simple)
+{
+    lectureFichiers();
+    bool fin = false;
 
+    if(simple)
+    {
+        std::vector<std::pair<std::string, bool>> resultat;
+        bool b = false, r = false, n = false, kl = false, surf = false;
+        bool tph = false, tc = false, tsd = false, ts = false, tk = false, bus = false;
+        for(const auto& elem:m_trajets)
+        {
+            if(elem.getType()=="B")
+            {
+                if(elem.getActive()) b = true;
+                std::cout<<elem.getActive()<<std::endl;
+            }
+            if(elem.getType()=="R")
+            {
+                if(elem.getActive()) r = true;
+            }
+            if(elem.getType()=="N")
+            {
+                if(elem.getActive()) n = true;
+            }
+            if(elem.getType()=="KL")
+            {
+                if(elem.getActive()) kl = true;
+            }
+            if(elem.getType()=="SURF")
+            {
+                if(elem.getActive()) surf = true;
+            }
+            if(elem.getType()=="TPH")
+            {
+                if(elem.getActive()) tph = true;
+            }
+            if(elem.getType()=="TC")
+            {
+                if(elem.getActive()) tc = true;
+            }
+            if(elem.getType()=="TSD")
+            {
+                if(elem.getActive()) tsd = true;
+            }
+            if(elem.getType()=="TS")
+            {
+                if(elem.getActive()) ts = true;
+            }
+            if(elem.getType()=="TK")
+            {
+                if(elem.getActive()) tk = true;
+            }
+            if(elem.getType()=="BUS")
+            {
+                if(elem.getActive()) bus = true;
+            }
+        }
+        resultat.push_back({"B",b});
+        resultat.push_back({"R",r});
+        resultat.push_back({"N",n});
+        resultat.push_back({"KL",kl});
+        resultat.push_back({"SURF",surf});
+        resultat.push_back({"TPH",tph});
+        resultat.push_back({"TC",tc});
+        resultat.push_back({"TSD",tsd});
+        resultat.push_back({"TS",ts});
+        resultat.push_back({"TK",tk});
+        resultat.push_back({"BUS",bus});
+        while(!fin)
+        {
+            fin = m_plan.pannelSimple(resultat);
+        }
 
+        for(const auto& elem:resultat)
+            std::cout<<elem.first<<" : "<<elem.second<<std::endl;
+
+        for(auto& elem: m_trajets)
+        {
+            if(elem.getType()=="B")
+            {
+                std::cout<<elem.getActive()<<"\t";
+                elem.setActive(resultat[0].second);
+                std::cout<<elem.getActive()<<std::endl;
+            }
+            if(elem.getType()=="R")
+            {
+                elem.setActive(resultat[1].second);
+            }
+            if(elem.getType()=="N")
+            {
+                elem.setActive(resultat[2].second);
+            }
+            if(elem.getType()=="KL")
+            {
+                elem.setActive(resultat[3].second);
+            }
+            if(elem.getType()=="SURF")
+            {
+                elem.setActive(resultat[4].second);
+            }
+            if(elem.getType()=="TPH")
+            {
+                elem.setActive(resultat[5].second);
+            }
+            if(elem.getType()=="TC")
+            {
+                elem.setActive(resultat[6].second);
+            }
+            if(elem.getType()=="TSD")
+            {
+                elem.setActive(resultat[7].second);
+            }
+            if(elem.getType()=="TS")
+            {
+                elem.setActive(resultat[8].second);
+            }
+            if(elem.getType()=="TK")
+            {
+                elem.setActive(resultat[9].second);
+            }
+            if(elem.getType()=="BUS")
+            {
+                elem.setActive(resultat[10].second);
+            }
+        }
+        for(const auto& elem:m_trajets)
+        {
+                if(elem.getType()=="B")
+                {
+                    std::cout<<elem.getActive()<<std::endl;
+                }
+        }
+    }
+    else
+    {
+        int page = 1;
+        while(!fin)
+        {
+            fin = m_plan.pannelAdvance(m_trajets, page);
+        }
+    }
+    reecritureFichiers();
+}
+
+void Station::lectureFichiers()
+{
+    std::string fichier = "data_arcs.txt";
+    while(!m_trajets.empty())
+    {
+        m_trajets.pop_back();
+    }
+    while(!m_points.empty())
+    {
+        m_points.pop_back();
+    }
+    while(!m_ininteret.empty())
+    {
+        m_ininteret.pop_back();
+    }
+    std::ifstream ifs{fichier};         //Lecture du fichier
+    if (!ifs)
+        throw std::runtime_error( "Impossible d'ouvrir en lecture " + fichier );
+    m_points.push_back(Point(0, "FakeNum0", 0, -815, -815));
+    ifs >> m_ordre;                     //Lecture du nombre de points
+    for(int i=0; i<m_ordre;i++)         //Création des points
+    {
+        int n, alt, x, y;
+        std::string lieu;
+        ifs>>n>>lieu>>alt>>x>>y;
+        m_points.push_back(Point(n, lieu, alt, x, y));
+    }
+    ifs >> m_taille;                    //Lecture du nombre de trajets existants
+    for(int i=0; i<m_taille; i++)       //Creation des arcs
+    {
+        int num, d, a;
+        std::string nom, type;
+        bool active;
+        ifs>>num>>nom>>type>>d>>a>>active;
+        Trajet trj(num, nom, type, d, a, m_points[d].getAlt(), m_points[a].getAlt());
+        if(active)
+        {
+            m_points[d].ajoutSuiv(trj);
+            m_points[a].ajoutAnte(trj);
+            trj.setActive(true);
+        }
+        else
+        {
+            trj.setSelec(false);
+            trj.setActive(false);
+        }
+        m_trajets.push_back(trj);
+    }
+    m_testAffichage = true;
+}
+
+void Station::reecritureFichiers()
+{
+    std::ofstream fichier("data_arcs.txt");
+    if(fichier)//ecriture du fichier data_arcs
+    {
+        fichier << m_points.size()-1<< std::endl;//ligne 1 pseudo
+        for(unsigned int i = 1; i<m_points.size(); i++)
+        {
+            fichier << m_points[i].getNum() << "\t" << m_points[i].getLieu() << "\t" << m_points[i].getAlt() << "\t" << m_points[i].x() << "\t" << m_points[i].y() << std::endl;
+        }
+        fichier << m_trajets.size() << std::endl;
+        for(unsigned int i = 0; i<m_trajets.size(); i++)
+        {
+            fichier << m_trajets[i].getNum() << "\t" << m_trajets[i].getNom() << "\t" << m_trajets[i].getType() << "\t" << m_trajets[i].getDepart() << "\t" << m_trajets[i].getArrivee() << "\t" << m_trajets[i].getActive() << std::endl;
+        }
+    }
+    else
+    {
+        m_plan.erreur("Erreur ouverture du fichier impossible");
+    }
+}
 

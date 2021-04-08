@@ -1,7 +1,7 @@
 #ifndef MENUS_H_INCLUDED
 #define MENUS_H_INCLUDED
 
-#include "Plan_Pistes.h"
+#include "Administrateurs.h"
 #include "Station.h"
 
 class Menus
@@ -13,7 +13,9 @@ public:
     Menus(Plan_Pistes p);
     ~Menus();
     bool principal();       //menu principal
-    bool cheminInterressant(Station s); //menu des extensions
+    bool cheminInterressant(); //menu du choix des chemins en fonction de critères définis par l'utilisateur
+    bool extras(); //menu des extensions
+    bool fonctionsAdmin(Station s, Administrateurs adm); //menu des fonctions Admin
 };
 
 #endif // MENUS_H_INCLUDED

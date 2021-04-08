@@ -40,6 +40,8 @@ public:
     std::string longType(std::string type) const;
     std::string cutDouble(double nombre);
     bool personnalise(std::vector<std::pair<std::string,int>>& connex);
+    bool pannelSimple(std::vector<std::pair<std::string,bool>>& connex);
+    bool pannelAdvance(std::vector<Trajet>& trajets, int& page);
 
     void emphase(std::string titre, std::string sousTitre);//Message accentué avec une première chose écrite en gros et une seconde en un peu plus petit en dessous
     int menu(std::string titre, std::vector<std::string> choix, int nbChoix);//menu divers avec choix paramétrables, attendant un clic de l'utilisateur sur une des options proposées
@@ -49,6 +51,7 @@ public:
     void regles(std::vector<std::string> regles);
     int menuPrincipal();    //Menu principal du jeu, attendant un clic de l'utilisateur sur une des options proposées
     int menuExtras();       //Menu des extensions du jeu, attendant un clic de l'utilisateur sur une des options proposées
+    int menuPersonalisation();       //Menu des extensions du jeu, attendant un clic de l'utilisateur sur une des options proposées
     void standby();         //attente que l'utilisateur clique sur fermer ou appuie sur [ECHAP]
 };
 

@@ -8,8 +8,6 @@ Point::Point(int num, std::string nom, int alt, int x, int y) : m_num(num), m_li
     m_couleur = 0;          //Mise à l'état 0 de la couleur
     m_anteDijk = -1;        //Mise à -1 (aucun) de l'antécédant
     m_anteBfs = -1;        //Mise à -1 (aucun) de l'antécédant
-    m_X+=35;
-    m_Y+=40;
     m_selectDijk = true;
 }
 

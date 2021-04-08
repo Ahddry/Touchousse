@@ -132,6 +132,14 @@ bool Trajet::getSelec() const      //Getter du critère de selection
 {
     return m_selectionable;
 }
+void Trajet::setActive(bool active)  //Setter du critère de bannissement
+{
+    m_active = active;
+}
+bool Trajet::getActive() const      //Getter du critère de bannissement
+{
+    return m_active;
+}
 
 int Trajet::getFlux() const
 {
