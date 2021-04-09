@@ -15,6 +15,7 @@ private:
     std::vector<std::string> m_ininteret; //Liste des types de connexion de peu d'intérêt pour le skieur
     Plan_Pistes m_plan; //Objet de l'affichage graphique
     bool m_testAffichage;
+    bool m_affichageBfs;
 public:
     Station(Plan_Pistes p);    //Constructeur du graphe prenant le chemin du fichier txt contenant le graphe en paramètres
     ~Station();
@@ -33,6 +34,7 @@ public:
     void adminPanel(bool simple);
     void lectureFichiers();
     void reecritureFichiers();
+    void setAffBfs(bool aff);
 
 };
 

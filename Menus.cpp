@@ -40,16 +40,31 @@ bool Menus::principal()///Menu principal du jeu
     }
     case 3:
     {
-        ///Dijkstra
+        ///Dijkstra ou BFS
         Station s(m_plan);
         s.resetAttributs();
+        std::vector<std::string> propos;
+        propos.push_back("En nombre de pistes");
+        propos.push_back("En duree de trajet");
+        int choix = m_plan.menu("Comment determiner le plus court chemin ?", propos, 2);
         m_plan.effacer();
         m_plan.setup();
         int point1, point2;
         s.saisieDijkstra(point1, point2);
-        if(s.bfs(point1, point2))
+        if(choix == 1)
         {
-            s.dijkstra(point1, point2);
+            s.setAffBfs(true);
+            m_plan.setup();
+            s.bfs(point1, point2);
+            m_plan.standby();
+            s.setAffBfs(false);
+        }
+        else
+        {
+            if(s.bfs(point1, point2))
+            {
+                s.dijkstra(point1, point2);
+            }
         }
         s.resetAttributs();
         break;

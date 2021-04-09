@@ -68,6 +68,7 @@ void Plan_Pistes::setup()///affichage des éléments de base d'une partie
     floodfill(m_plan, SCREEN_W/2, 23, NOIR);
     rectfill(m_plan, 27.5, 25, SCREEN_W-27.5, SCREEN_H-25, MONTAGNE);
     rectfill(m_plan, SCREEN_W/2-80, SCREEN_H-15, SCREEN_W/2+80, SCREEN_H, NOIR);
+    rectfill(m_plan, SCREEN_W/2-50, SCREEN_H-45, SCREEN_W/2+50, SCREEN_H, MONTAGNE);
     afficher();
 }
 
@@ -579,7 +580,6 @@ bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
         }
         textout_right_ex(m_plan, old,(std::to_string(elem.getNum()) + " :").c_str(), x-35, y-17, SOUS_TITRE,-1);
         entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true);
-        std::cout<<"Affichage : "<<elem.getDepart()<<"->"<<elem.getArrivee()<<" "<<elem.getType()<<std::endl;
         int x2 = x+400;
         if(elem.getActive() == true)
         {

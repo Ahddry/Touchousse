@@ -44,6 +44,7 @@ Station::Station(Plan_Pistes p) : m_plan(p)
         m_trajets.push_back(trj);
     }
     m_testAffichage = true;
+    m_affichageBfs = false;
 }
 
 Station::~Station(){}
@@ -104,9 +105,31 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
             if(elem.getBfs()==-1)
             {
                 elem.setSelectDijk(false);
-                //std::cout<<"Mise a faux du point : "<<elem.getNum()<<std::endl;
             }
 
+        }
+        if(m_affichageBfs)  //Affichage graphique du BFS
+        {
+            int dest = arrivee;
+            int ante = m_points[arrivee].getBfs();
+            //m_plan.point(m_points[arrivee]);
+            while(ante!=-1)
+            {
+
+                std::vector<Trajet> trajets = m_points[dest].getAnte();
+                for(auto& t:trajets)
+                {
+                    if(t.getDepart()==ante)
+                    {
+                        m_plan.trajet(t, m_points[t.getDepart()], m_points[t.getArrivee()], 0);
+                        m_plan.point(m_points[t.getDepart()]);
+                        m_plan.point(m_points[t.getArrivee()]);
+                        break;
+                    }
+                }
+                dest = ante;
+                ante = m_points[dest].getBfs();
+            }
         }
         m_points[depart].setSelectDijk(true);
         if(m_points[arrivee].getBfs()==-1)
@@ -116,6 +139,7 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
         }
         else
         {
+            if(m_affichageBfs) m_plan.emphase("Voici le plus court chemin", "en nombre de trajets jusqu'a "+m_points[arrivee].getLieu());
             return true;
         }
     }
@@ -143,7 +167,6 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
         if(!elem.getSelectDijk())
         {
             elem.setCouleur(2);
-            //std::cout<<"Mise a NOIR du point : "<<elem.getNum()<<std::endl;
         }
     }
     m_points[depart].setDistance(0);       //Le point de départ a une distance de 0
@@ -249,7 +272,6 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
                     Trajet t = file.top();
                     if(selecArc(t))
                     {
-
                         duree+=t.getPoids();
                         m_plan.trajet(t,m_points[t.getDepart()], m_points[t.getArrivee()],0);
                         affiche = true;
@@ -260,8 +282,6 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
         }
         elem.setBfs(-1);            //Pour éviter un warning sur la non utilisation de la varible "elem" -> sans effet reel.
     }
-    std::cout<<"Duree poids : " + std::to_string(m_points[arrivee].getDistance())<<std::endl;
-    std::cout<<"Duree reele : " + std::to_string(duree)<<std::endl;
     m_plan.descripPistes();
     m_plan.afficher();
     m_plan.standby();
@@ -641,7 +661,6 @@ void Station::personnalise()
     }
     for(const auto& elem: resultat)
     {
-        //std::cout<<elem.first<<" : "<<elem.second<<std::endl;
         if(elem.second == 1)
         {
             m_ininteret.push_back(elem.first);
@@ -670,7 +689,6 @@ void Station::adminPanel(bool simple)
             if(elem.getType()=="B")
             {
                 if(elem.getActive()) b = true;
-                std::cout<<elem.getActive()<<std::endl;
             }
             if(elem.getType()=="R")
             {
@@ -736,9 +754,7 @@ void Station::adminPanel(bool simple)
         {
             if(elem.getType()=="B")
             {
-                std::cout<<elem.getActive()<<"\t";
                 elem.setActive(resultat[0].second);
-                std::cout<<elem.getActive()<<std::endl;
             }
             if(elem.getType()=="R")
             {
@@ -780,13 +796,6 @@ void Station::adminPanel(bool simple)
             {
                 elem.setActive(resultat[10].second);
             }
-        }
-        for(const auto& elem:m_trajets)
-        {
-                if(elem.getType()=="B")
-                {
-                    std::cout<<elem.getActive()<<std::endl;
-                }
         }
     }
     else
@@ -849,6 +858,7 @@ void Station::lectureFichiers()
         m_trajets.push_back(trj);
     }
     m_testAffichage = true;
+    m_affichageBfs = false;
 }
 
 void Station::reecritureFichiers()
@@ -873,3 +883,7 @@ void Station::reecritureFichiers()
     }
 }
 
+void Station::setAffBfs(bool aff)
+{
+    m_affichageBfs = aff;
+}
