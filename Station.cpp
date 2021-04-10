@@ -117,7 +117,7 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
             {
 
                 std::vector<Trajet> trajets = m_points[dest].getAnte();
-                for(auto& t:trajets)
+                for(auto& t:trajets)                //Récupération des différents trajets
                 {
                     if(t.getDepart()==ante)
                     {
@@ -132,7 +132,7 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
             }
         }
         m_points[depart].setSelectDijk(true);
-        if(m_points[arrivee].getBfs()==-1)
+        if(m_points[arrivee].getBfs()==-1)      //On test si le point d'arrivée selectionné est atteignable
         {
             if(m_testAffichage) m_plan.erreur("Le point d'arrivee n'est pas atteignable avec les criteres actuels.");
             return false;
@@ -194,7 +194,7 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
                 double poids = truc.getPoids(), cste = 1;
                 for(const auto& type: m_ininteret)
                 {
-                    if(truc.getType() == type) cste = 150.4;
+                    if(truc.getType() == type) cste = 150.4;            //Si le type de trajet à éviter et le même que celui de l'arc alors on lui applique un coefficient pour éviter de le selctionner
                 }
                 poids *= cste;
                 int z = truc.getArrivee();
@@ -221,12 +221,12 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     }while(!fin);
     int ante = m_points[arrivee].getDijk();
 
-    for(auto& elem:m_points)
+    for(auto& elem:m_points)            //On met l'état des sommets selectionner du dijkstra à faux
     {
         elem.setSelectDijk(false);
     }
 
-    m_points[arrivee].setSelectDijk(true);
+    m_points[arrivee].setSelectDijk(true);          //L'état du sommet d'arrivée est mis à vrai
     double duree = 0;
     m_plan.setup();
     int actuel;
@@ -295,12 +295,12 @@ public:
     int operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
     {
         if(t1.getArrivee()==t2.getArrivee())
-            return t1.getDepart() > t2.getDepart(); //En cas de même poids, tri par ordre croissant du nombre de départ
+            return t1.getDepart() > t2.getDepart();     //En cas de même poids, tri par ordre croissant du nombre de départ
         return t1.getArrivee() > t2.getArrivee();       //Comparaison du poids d'une arête à celui d'une autre
     }
 };
 
-void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkerson pour déterminer le flot horaire maximal de skieurs entre deux points
+void Station::fordFulkerson(int depart, int arrivee)    //Algorithme de Ford-Fulkerson pour déterminer le flot horaire maximal de skieurs entre deux points
 {
     m_plan.setup();
     m_testAffichage = false;
@@ -311,7 +311,7 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
     std::vector<Trajet> testDoublons2;
     std::vector<Trajet> sature;
     m_plan.point(m_points[depart]);
-    while(bfs(depart,arrivee))
+    while(bfs(depart,arrivee))          //Parcours du trajet par le BFS
     {
         flowMin = INT_MAX;
         for(int i = arrivee; i!=depart; i = anteBfs)
@@ -323,7 +323,7 @@ void Station::fordFulkerson(int depart, int arrivee)//Algorithme de Ford-Fulkers
                 {
                     if(elem.getDepart() == anteBfs && elem.getArrivee() == i && elem.getSelec())
                     {
-                        int capres = elem.getCapacite()-elem.getFlux();
+                        int capres = elem.getCapacite()-elem.getFlux();         //
                         flowMin = std::min(flowMin, capres);
                         testDoublons.push_back(elem);
                         m_plan.point(m_points[i]);
@@ -442,7 +442,7 @@ void Station::resetBfs()
 
 void Station::interactif()
 {
-    for(const auto& elem:m_points)
+    for(const auto& elem:m_points)          //On créer les points sur le plan interactif
     {
         m_plan.point(elem);
     }
@@ -484,13 +484,13 @@ void Station::arc()
 {
     std::string saisie = m_plan.saisie("Ou vous trouvez-vous ?", "Veuillez saisir le numero ou le nom de votre trajet :");
     bool trouve = false;
-    if(atoi((saisie).c_str()) == 0)
+    if(atoi((saisie).c_str()) == 0)         //Saisie sécurisée de l'arc et conversion de la saisie en int
     {
         for(const auto& elem:m_trajets)
         {
             if(saisie == elem.getNom())
             {
-                m_plan.infoTrajet(elem, m_points);
+                m_plan.infoTrajet(elem, m_points);      //Info sur l'arc selectionner
                 trouve = true;
             }
         }
@@ -499,9 +499,9 @@ void Station::arc()
     {
         for(const auto& elem:m_trajets)
         {
-            if(atoi(saisie.c_str()) == elem.getNum())
+            if(atoi(saisie.c_str()) == elem.getNum())       //Saisie sécurisée de l'arc et conversion de la saisie en int
             {
-                m_plan.infoTrajet(elem, m_points);
+                m_plan.infoTrajet(elem, m_points);        //Info sur l'arc selectionner
                 trouve = true;
             }
         }
@@ -514,7 +514,7 @@ void Station::saisieDijkstra(int& point1, int& point2)
     m_plan.effacer();
     m_plan.setup();
 
-    do
+    do          //Saisie sécurisée du point de départ
     {
         point1 = atoi(m_plan.saisie("Ou vous trouvez-vous ?", "Veuillez saisir le numero de depart :").c_str());
         if(point1<=0){m_plan.erreur("La location n'existe pas");}
@@ -524,7 +524,7 @@ void Station::saisieDijkstra(int& point1, int& point2)
     m_plan.effacer();
     m_plan.setup();
 
-    do
+    do          //Saisie sécurisée du point d'arrivée
     {
         point2 = atoi(m_plan.saisie("Ou voulez allez ?", "Veuillez saisir le numero d'arrivee :").c_str());
         if(point2<=0){m_plan.erreur("La location n'existe pas");}
@@ -553,7 +553,7 @@ void Station::preselec(int presel)
     {
     case 1:
     {
-        for(auto& elem:m_trajets)
+        for(auto& elem:m_trajets)       //On supprime certain types de trajets
         {
             std::string type = elem.getType();
             if(type == "N" || type =="KL" || type =="SURF")
@@ -561,7 +561,7 @@ void Station::preselec(int presel)
                 elem.setSelec(false);
             }
         }
-        m_ininteret.push_back("R");
+        m_ininteret.push_back("R");         //on fait en sorte que ces trajets ne soient pas prioritaire lors du dijkstra
         saisieDijkstra(point1, point2);
         if(bfs(point1, point2))
         {
@@ -571,7 +571,7 @@ void Station::preselec(int presel)
     }
     case 2:
         {
-            for(auto& elem:m_trajets)
+            for(auto& elem:m_trajets)       //On supprime certain types de trajets
             {
                 std::string type = elem.getType();
                 if(type =="KL")
@@ -579,7 +579,7 @@ void Station::preselec(int presel)
                     elem.setSelec(false);
                 }
             }
-            m_ininteret.push_back("N");
+            m_ininteret.push_back("N");         //on fait en sorte que ces trajets ne soient pas prioritaire lors du dijkstra
             m_ininteret.push_back("SURF");
             saisieDijkstra(point1, point2);
             if(bfs(point1, point2))
@@ -591,7 +591,7 @@ void Station::preselec(int presel)
     case 3:
         {
             resetAttributs();
-            m_ininteret.push_back("B");
+            m_ininteret.push_back("B");         //on fait en sorte que ces trajets ne soient pas prioritaire lors du dijkstra
             m_ininteret.push_back("BUS");
             saisieDijkstra(point1, point2);
             if(bfs(point1, point2))
@@ -603,7 +603,7 @@ void Station::preselec(int presel)
     case 4:
         {///CA CRASH POUR L'INSTANT
 
-            for(auto& elem:m_trajets)
+            for(auto& elem:m_trajets)           //On supprime certain types de trajets
             {
                 std::string type = elem.getType();
                 if(type =="BUS" || type == "TC" || type == "TPH")
@@ -611,7 +611,7 @@ void Station::preselec(int presel)
                     elem.setSelec(false);
                 }
             }
-            m_ininteret.push_back("TSD");
+            m_ininteret.push_back("TSD");           //on fait en sorte que ces trajets ne soient pas prioritaire lors du dijkstra
             m_ininteret.push_back("TS");
             m_ininteret.push_back("TK");
             saisieDijkstra(point1, point2);
@@ -649,7 +649,7 @@ void Station::personnalise()
         std::string type = trajets.getType();
         for(const auto& elem: resultat)
         {
-            if(elem.second == 2)
+            if(elem.second == 2)        //Si on double clique sur l'élement alors le trajet ne sera pas emprunté
             {
                 if(type == elem.first)
                 {
@@ -661,7 +661,7 @@ void Station::personnalise()
     }
     for(const auto& elem: resultat)
     {
-        if(elem.second == 1)
+        if(elem.second == 1)            //Si on clique sur l'élement alors on évitera d'emprunter ce trajet
         {
             m_ininteret.push_back(elem.first);
         }
@@ -684,7 +684,7 @@ void Station::adminPanel(bool simple)
         std::vector<std::pair<std::string, bool>> resultat;
         bool b = false, r = false, n = false, kl = false, surf = false;
         bool tph = false, tc = false, tsd = false, ts = false, tk = false, bus = false;
-        for(const auto& elem:m_trajets)
+        for(const auto& elem:m_trajets)         //Permet de savoir si les types de trajets sont ouverts ou fermés
         {
             if(elem.getType()=="B")
             {
@@ -750,7 +750,7 @@ void Station::adminPanel(bool simple)
         for(const auto& elem:resultat)
             std::cout<<elem.first<<" : "<<elem.second<<std::endl;
 
-        for(auto& elem: m_trajets)
+        for(auto& elem: m_trajets)          //Permet d'ouvrir ou fermé certains types de trajets
         {
             if(elem.getType()=="B")
             {

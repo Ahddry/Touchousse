@@ -34,9 +34,9 @@ public:
     bool getSelec() const;      //Getter du critère de selection
     void setActive(bool active);  //Setter du critère de bannissement
     bool getActive() const;      //Getter du critère de bannissement
-    int getFlux() const;
-    void setFlux(int flux);
-    int getCapacite() const;
+    int getFlux() const;        //Getter du flux
+    void setFlux(int flux);        //Setter du flux
+    int getCapacite() const;        //Getter de la capacité
 
 };
 

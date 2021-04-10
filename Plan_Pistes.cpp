@@ -108,7 +108,7 @@ void Plan_Pistes::afficher()///affichages des éléments du buffer
     blit(m_plan, screen, 0,0, x, y, m_plan->w, m_plan->h);
 }
 
-void Plan_Pistes::descripPistes()
+void Plan_Pistes::descripPistes()       //Décrit les
 {
     std::vector<Trajet> traj;
     traj.push_back(Trajet(0, "", "V", 0, 0, 0, 0));
@@ -201,7 +201,7 @@ void Plan_Pistes::trajet(Trajet t, Point depart, Point arrivee, int compteur)   
 
 }
 
-void Plan_Pistes::trait(std::string type, int x1, int y1, int x2, int y2, int couleur)
+void Plan_Pistes::trait(std::string type, int x1, int y1, int x2, int y2, int couleur)      //Trace les arcs pour les différents types de trajets
 {
     if(type=="V"||type=="B"||type=="R"||type=="N"||type=="KL"||type=="SURF"||type=="BUS")
     {
@@ -220,7 +220,7 @@ void Plan_Pistes::trait(std::string type, int x1, int y1, int x2, int y2, int co
 }
 
 
-Point Plan_Pistes::selecPoint(std::vector<Point> ensemble) const
+Point Plan_Pistes::selecPoint(std::vector<Point> ensemble) const        //Permet de selectionner un point quand on clique dessus
 {
     std::vector<std::pair<int, int>> coords;
     for(const auto& elem:ensemble)
@@ -237,7 +237,7 @@ Point Plan_Pistes::selecPoint(std::vector<Point> ensemble) const
     while(!fin)
     {
         clic = false;
-        while(!clic)
+        while(!clic)        //instruction pour un clic de souris
         {
             if(mouse_b&1)
             {
@@ -261,7 +261,7 @@ Point Plan_Pistes::selecPoint(std::vector<Point> ensemble) const
     return ensemble[numero];
 }
 
-void Plan_Pistes::infoPoint(Point point)
+void Plan_Pistes::infoPoint(Point point)        //Affiche les information du point selectionner
 {
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
@@ -382,6 +382,7 @@ std::string Plan_Pistes::cutDouble(double nombre)
 
 bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
 {
+    //Polices utilisées
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
     FONT *old = load_font("Fonts/Normal.pcx",NULL,NULL);
@@ -438,7 +439,7 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
     while(!fin)
     {
         clic = false;
-        while(!clic)
+        while(!clic)        //Instruction pour un clic de souris
         {
             if(mouse_b&1)
             {
@@ -472,6 +473,7 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
 
 bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
 {
+    //Polices utilisées
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
     FONT *old = load_font("Fonts/Normal.pcx",NULL,NULL);
@@ -496,12 +498,12 @@ bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
         }
         entreDeux(1, 2, elem.first, x, y, true);
         int x2 = x+400;
-        if(elem.second == true)
+        if(elem.second == true)     //Affiche l'état du trajet
         {
             couleur = VERT_FONCE;
             texte = "OUVERTES";
         }
-        else if(elem.second == false)
+        else if(elem.second == false)       //Affiche l'état du trajet
         {
             couleur = ROUGE;
             texte = "FERMEES";
@@ -522,7 +524,7 @@ bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
     while(!fin)
     {
         clic = false;
-        while(!clic)
+        while(!clic)        //Instruction pour un clic de souris
         {
             if(mouse_b&1)
             {
@@ -531,7 +533,7 @@ bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
                 clic = true;
             }
         }
-        for(unsigned int i = 0; i<coords.size(); i++)
+        for(unsigned int i = 0; i<coords.size(); i++)       //Instruction pour connaitre la position de la souris et modifier les panneaux avec les clics souris
         {
             if (xSouris>=coords[i].first-100 && ySouris>=coords[i].second-25 && xSouris<=coords[i].first+100 && ySouris<=coords[i].second+25)
             {
@@ -556,6 +558,7 @@ bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
 
 bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
 {
+    //Polices utilisées
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
     FONT *old = load_font("Fonts/Normal.pcx",NULL,NULL);
@@ -581,12 +584,12 @@ bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
         textout_right_ex(m_plan, old,(std::to_string(elem.getNum()) + " :").c_str(), x-35, y-17, SOUS_TITRE,-1);
         entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true);
         int x2 = x+400;
-        if(elem.getActive() == true)
+        if(elem.getActive() == true)        //Affiche l'état d'une piste ou d'un type de trajet
         {
             couleur = VERT_FONCE;
             texte = "OUVERTES";
         }
-        else if(elem.getActive() == false)
+        else if(elem.getActive() == false)      //Affiche l'état d'une piste ou d'un type de trajet
         {
             couleur = ROUGE;
             texte = "FERMEES";
@@ -600,12 +603,12 @@ bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
 
     rectfill(m_plan, SCREEN_W/2-50, SCREEN_H-45, SCREEN_W/2+50, SCREEN_H, VERT_FONCE);
     textout_centre_ex(m_plan, old,"Confirmer", SCREEN_W/2,SCREEN_H-40, NOIR,-1);
-    if(page>1)
+    if(page>1)      //Permet de naviguer entre les différentes pages
     {
         rectfill(m_plan, 27.5, SCREEN_H-70, 185, SCREEN_H-25, makecol(255, 127, 39));
         textout_ex(m_plan, old,"Page precedente", 32,SCREEN_H-65, NOIR,-1);
     }
-    if(page<7)
+    if(page<7)      //Permet de naviguer entre les différentes pages
     {
         rectfill(m_plan, SCREEN_W-160, SCREEN_H-70, SCREEN_W-27.5, SCREEN_H-25, makecol(255, 127, 39));
         textout_right_ex(m_plan, old,"Page suivante", SCREEN_W-32,SCREEN_H-65, NOIR,-1);
@@ -617,7 +620,7 @@ bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
     while(!fin)
     {
         clic = false;
-        while(!clic)
+        while(!clic)        //Instruction pour un clic de souris
         {
             if(mouse_b&1)
             {
@@ -626,7 +629,7 @@ bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
                 clic = true;
             }
         }
-        for(unsigned int i = 0; i<coords.size(); i++)
+        for(unsigned int i = 0; i<coords.size(); i++)       //Instruction pour connaitre la position de la souris et modifier les panneaux avec les clics souris
         {
             if (xSouris>=coords[i].first-100 && ySouris>=coords[i].second-25 && xSouris<=coords[i].first+100 && ySouris<=coords[i].second+25)
             {

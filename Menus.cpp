@@ -230,17 +230,17 @@ bool Menus::fonctionsAdmin(Station s, Administrateurs adm) ///Menu des fonctions
     bool quit = false;
     switch(selec)
     {
-    case 1:
+    case 1:     //Supprimer des trajets un à un
     {
         s.adminPanel(false);
         break;
     }
-    case 2:
+    case 2:     //Supprimer des types de trajets
     {
         s.adminPanel(true);
         break;
     }
-    case 3:
+    case 3:     //Ajouter un administrateur
     {
         m_plan.effacer();
         Administrateurs newAdmin(adm.getNom(), m_plan);
