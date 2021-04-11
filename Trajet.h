@@ -12,9 +12,13 @@ private:
     int m_arrivee;      //Point d'arrivée de l'arc
     double m_poids;         //Poids/durée de parcours de l'arc
     double m_interet;         //Poids/durée de parcours de l'arc * une constante d'inintéressement
+    int m_flux;          //Flux circulant actuelement sur l'arc
+    int m_capacite;          //Capacité horaire de skieurs sur l'arc
     int m_altDepart;    //Altitude du point de départ
     int m_altArrivee;   //Altitude du point d'arrivée
     bool m_selectionable;    //Choix de si l'arc est selectionnable ou non vis-à-vis des paramètres actuels de l'utilisateur
+    bool m_active;         //Choix de si l'arc est actif à l'ouverture du fichier
+
 public:
     Trajet(int num, std::string nom, std::string type, int depart, int arrivee, int altDe, int altAr);
     ~Trajet();
@@ -28,6 +32,12 @@ public:
     double getInteret() const;   //Getter de l'intéret de l'arc
     void setSelec(bool selection);  //Setter du critère de selection
     bool getSelec() const;      //Getter du critère de selection
+    void setActive(bool active);  //Setter du critère de bannissement
+    bool getActive() const;      //Getter du critère de bannissement
+    int getFlux() const;        //Getter du flux
+    void setFlux(int flux);        //Setter du flux
+    int getCapacite() const;        //Getter de la capacité
+
 };
 
 #endif // TRAJET_H_INCLUDED

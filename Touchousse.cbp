@@ -38,6 +38,8 @@
 			<Add library="jpgalleg" />
 			<Add library="alleg44.dll" />
 		</Linker>
+		<Unit filename="Administrateurs.cpp" />
+		<Unit filename="Administrateurs.h" />
 		<Unit filename="Menus.cpp" />
 		<Unit filename="Menus.h" />
 		<Unit filename="Plan_Pistes.cpp" />
