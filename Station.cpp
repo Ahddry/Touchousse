@@ -29,7 +29,6 @@ Station::Station(Plan_Pistes p) : m_plan(p)
         bool active;
         ifs>>num>>nom>>type>>d>>a>>active;
         Trajet trj(num, nom, type, d, a, m_points[d].getAlt(), m_points[a].getAlt());
-        ///std::cout<<num<<":"<<active<<std::endl;
         if(active)
         {
             m_points[d].ajoutSuiv(trj);
@@ -104,7 +103,7 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
         {
             if(elem.getBfs()==-1)
             {
-                elem.setSelectDijk(false);
+                elem.setSelectDijk(false);  //Mise à faux du critère de sélection de point pour Dijkstra si celui-ci n'est pas atteignable
             }
 
         }
@@ -121,7 +120,7 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
                 {
                     if(t.getDepart()==ante)
                     {
-                        m_plan.trajet(t, m_points[t.getDepart()], m_points[t.getArrivee()], 0);
+                        m_plan.trajet(t, m_points[t.getDepart()], m_points[t.getArrivee()], 0); //Affichages graphiques du BFS
                         m_plan.point(m_points[t.getDepart()]);
                         m_plan.point(m_points[t.getArrivee()]);
                         break;
@@ -148,7 +147,7 @@ bool Station::bfs(int depart, int arrivee)      ///Algorithme du BFS
 
 }
 
-class TestPoids
+class TestPoids                     ///Classe permetant la comparaison d'une arete à une autre pour la pirority queue en terme de poids
 {
 public:
     double operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
@@ -272,7 +271,7 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
                     Trajet t = file.top();
                     if(selecArc(t))
                     {
-                        duree+=t.getPoids();
+                        duree+=t.getPoids();                    //Affichage graphique de la durée de parcourt du chemin trouvé
                         m_plan.trajet(t,m_points[t.getDepart()], m_points[t.getArrivee()],0);
                         affiche = true;
                     }
@@ -289,14 +288,14 @@ void Station::dijkstra(int depart, int arrivee)  ///Algorithme de Dijkstra
     m_plan.standby();
 }
 
-class Comparaison
+class Comparaison               ///Classe permetant la comparaison d'une arete à une autre pour la pirority queue en terme de numéro d'arrivée
 {
 public:
     int operator() (const Trajet& t1, const Trajet& t2) //Définition de la comparaison d'une Arête à une autre pour la priority_queue
     {
         if(t1.getArrivee()==t2.getArrivee())
-            return t1.getDepart() > t2.getDepart();     //En cas de même poids, tri par ordre croissant du nombre de départ
-        return t1.getArrivee() > t2.getArrivee();       //Comparaison du poids d'une arête à celui d'une autre
+            return t1.getDepart() > t2.getDepart();     //En cas de même numéro d'arrivée, tri par ordre croissant du nombre de départ
+        return t1.getArrivee() > t2.getArrivee();       //Comparaison du numéro d'arrivée d'une arête à celui d'une autre
     }
 };
 
@@ -323,16 +322,16 @@ void Station::fordFulkerson(int depart, int arrivee)    //Algorithme de Ford-Ful
                 {
                     if(elem.getDepart() == anteBfs && elem.getArrivee() == i && elem.getSelec())
                     {
-                        int capres = elem.getCapacite()-elem.getFlux();         //
-                        flowMin = std::min(flowMin, capres);
-                        testDoublons.push_back(elem);
-                        m_plan.point(m_points[i]);
+                        int capres = elem.getCapacite()-elem.getFlux();         //récupération de la capacité résultante sur un arc
+                        flowMin = std::min(flowMin, capres);                    //Recherche du flux maximal possible sur un chemin
+                        testDoublons.push_back(elem);       //Test pour l'affichage graphique
+                        m_plan.point(m_points[i]);          //Affichage graphique des points parcourus lors du chemin
                     }
                 }
             }
 
         }
-        for(int i = arrivee; i!=depart; i = anteBfs)
+        for(int i = arrivee; i!=depart; i = anteBfs)    //ajout du flux trouvé au chemin
         {
             anteBfs = m_points[i].getBfs();
             if(anteBfs!=(-1))
@@ -341,11 +340,11 @@ void Station::fordFulkerson(int depart, int arrivee)    //Algorithme de Ford-Ful
                 {
                     if(elem.getDepart() == anteBfs && elem.getArrivee() == i && elem.getSelec())
                     {
-                        elem.setFlux(elem.getFlux()+ flowMin);
-                        if(elem.getFlux()>=elem.getCapacite())
+                        elem.setFlux(elem.getFlux()+ flowMin);  //ajut du flux trouvé sur chauqe arc du chemin
+                        if(elem.getFlux()>=elem.getCapacite())  //si l'arc atteint sa capacité maximal de flux
                         {
-                            elem.setSelec(false);
-                            sature.push_back(elem);
+                            elem.setSelec(false);               //l'enlever des arcs sélectionnables
+                            sature.push_back(elem);             //le marquer comme saturé pour l'affichage graphique
                         }
                     }
 
@@ -353,11 +352,11 @@ void Station::fordFulkerson(int depart, int arrivee)    //Algorithme de Ford-Ful
             }
 
         }
-        flowMax += flowMin;
+        flowMax += flowMin;         //Ajout du flux trouvé au flux total
         resetBfs();
     }
     std::vector<std::pair<int,int>> arrivees;
-    for(auto& elem :testDoublons)
+    for(auto& elem :testDoublons)       //Test pour l'affichage graphique des arcs (pour qu'ils ne se superposent pas)
     {
         bool doublon = false;
         for(auto& traj: testDoublons2)
@@ -372,7 +371,7 @@ void Station::fordFulkerson(int depart, int arrivee)    //Algorithme de Ford-Ful
     {
         file.push(elem);
     }
-    while(!file.empty())
+    while(!file.empty())    //Boucle d'affichage graphique des arcs parcourus par un flux
     {
         compteur = 0;
         Trajet t = file.top();
@@ -392,14 +391,14 @@ void Station::fordFulkerson(int depart, int arrivee)    //Algorithme de Ford-Ful
     m_plan.standby();
     m_plan.effacer();
     m_plan.setup();
-    for(auto& elem:sature)
+    for(auto& elem:sature)  //boucle d'affichage des arcs saturés et des points auquels ils sont reliés
     {
         elem.setSelec(true);
         m_plan.trajet(elem, m_points[elem.getDepart()], m_points[elem.getArrivee()], 0);
         m_plan.point(m_points[elem.getDepart()]);
         m_plan.point(m_points[elem.getArrivee()]);
     }
-    m_plan.emphase("Ces trajets sont satures", "Il faudrait si possible augmenter leur capacite horaire");
+    m_plan.emphase("Ces trajets sont satures", "Il faudrait si possible augmenter leur capacite horaire");  //un message
     m_plan.standby();
     m_testAffichage = true;
 }
@@ -417,9 +416,9 @@ void Station::resetAttributs()
     }
     for(auto& elem:m_trajets)
     {
-        elem.setSelec(true);
-        elem.setInteret(true);
-        elem.setFlux(0);
+        elem.setSelec(true);        //Mise à vrai du critère de sélection de trajet
+        elem.setInteret(true);      //Mise à vrai de l'intéret pour l'arc
+        elem.setFlux(0);            //Mise à 0 du flux sur l'arc
         if(!elem.getActive())
         {
             elem.setSelec(false);
@@ -427,7 +426,7 @@ void Station::resetAttributs()
     }
     while(!m_ininteret.empty())
     {
-        m_ininteret.pop_back();
+        m_ininteret.pop_back();     //Vidage de la liste des arcs non intéréssants
     }
 }
 
@@ -454,9 +453,9 @@ void Station::interactif()
         std::priority_queue<Trajet, std::vector<Trajet>, Comparaison> file; //File de priorité des arêtes pondérées, triées par ordre croissant de point d'arrivée
         for(const auto& trajets: traj)
         {
-            file.push(trajets);
+            file.push(trajets);     //Remplissage de la file de priorité
         }
-        while(!file.empty())
+        while(!file.empty())        //Boucle d'affichage des arcs
         {
             int compteur = 0;
             Trajet t = file.top();
@@ -474,34 +473,34 @@ void Station::interactif()
         }
 
     }
-    m_plan.descripPistes();
+    m_plan.descripPistes();     //Affichage de la légende de pistes
     m_plan.afficher();
-    Point selection = m_plan.selecPoint(m_points);
-    m_plan.infoPoint(selection);
+    Point selection = m_plan.selecPoint(m_points);  //Selection cliquable de point
+    m_plan.infoPoint(selection);    //Affichage des informations sur le point sélectionné
 }
 
 void Station::arc()
-{
+{   //Saisie sécurisée de l'arc et conversion de la saisie en int
     std::string saisie = m_plan.saisie("Ou vous trouvez-vous ?", "Veuillez saisir le numero ou le nom de votre trajet :");
     bool trouve = false;
-    if(atoi((saisie).c_str()) == 0)         //Saisie sécurisée de l'arc et conversion de la saisie en int
+    if(atoi((saisie).c_str()) == 0)      //Si l'int est =0 alors c'est que l'utilisateur a saisi le nom de l'arc et non son numéro
     {
-        for(const auto& elem:m_trajets)
+        for(const auto& elem:m_trajets) //Parcours des trajets à la recherche de l'arc souhaité
         {
             if(saisie == elem.getNom())
             {
-                m_plan.infoTrajet(elem, m_points);      //Info sur l'arc selectionner
+                m_plan.infoTrajet(elem, m_points);      //Affichage graphique des informations sur l'arc sélectionné
                 trouve = true;
             }
         }
     }
-    else
+    else        //Si l'int est différent de 0 alors c'est que l'utilisateur a saisi le numéro de l'arc et non son nom
     {
-        for(const auto& elem:m_trajets)
+        for(const auto& elem:m_trajets)//Parcours des trajets à la recherche de l'arc souhaité
         {
-            if(atoi(saisie.c_str()) == elem.getNum())       //Saisie sécurisée de l'arc et conversion de la saisie en int
+            if(atoi(saisie.c_str()) == elem.getNum())       //conversion de la saisie en int
             {
-                m_plan.infoTrajet(elem, m_points);        //Info sur l'arc selectionner
+                m_plan.infoTrajet(elem, m_points);        //Affichage graphique des informations sur l'arc sélectionné
                 trouve = true;
             }
         }
@@ -533,7 +532,7 @@ void Station::saisieDijkstra(int& point1, int& point2)
 }
 
 
-bool Station::selecArc(Trajet t)
+bool Station::selecArc(Trajet t)    //Permet de vérifier si l'arc est sélectionnable avec les critères actuels
 {
     for(auto& elem:m_trajets)
     {
@@ -601,7 +600,7 @@ void Station::preselec(int presel)
             break;
         }
     case 4:
-        {///CA CRASH POUR L'INSTANT
+        {
 
             for(auto& elem:m_trajets)           //On supprime certain types de trajets
             {
@@ -627,22 +626,26 @@ void Station::preselec(int presel)
 void Station::personnalise()
 {
     std::vector<std::pair<std::string, int>> resultat;
-    resultat.push_back({"V",0});
-    resultat.push_back({"B",0});
-    resultat.push_back({"R",0});
-    resultat.push_back({"N",0});
-    resultat.push_back({"KL",0});
-    resultat.push_back({"SURF",0});
-    resultat.push_back({"TPH",0});
-    resultat.push_back({"TC",0});
-    resultat.push_back({"TSD",0});
-    resultat.push_back({"TS",0});
-    resultat.push_back({"TK",0});
-    resultat.push_back({"BUS",0});
+
+    int taille = 0;
+
+    std::ifstream ifs{"preferences.txt"};         //Lecture du fichier preferences
+    if (!ifs)
+        throw std::runtime_error( "Impossible d'ouvrir en lecture preferences.txt" );
+    m_points.push_back(Point(0, "FakeNum0", 0, -815, -815));
+    ifs >> taille;                     //Lecture du nombre de types
+    for(int i=0; i<taille;i++)
+    {
+        std::string type;
+        int val;
+        ifs >> type >> val;
+        resultat.push_back({type, val});
+    }
+
     bool quitter = false;
     while(!quitter)
     {
-        quitter = m_plan.personnalise(resultat);
+        quitter = m_plan.personnalise(resultat);    //Attente de la fin de la sélection de l'utilisateur
     }
     for(auto& trajets: m_trajets)
     {
@@ -666,17 +669,33 @@ void Station::personnalise()
             m_ininteret.push_back(elem.first);
         }
     }
+
+    std::ofstream fichier("preferences.txt");
+    if(fichier)//ecriture du fichier preferences
+    {
+        fichier << resultat.size() << std::endl;
+        for(auto& elem: resultat)
+        {
+            fichier << elem.first << "\t" << elem.second << std::endl;
+        }
+    }
+    else
+    {
+        m_plan.erreur("Erreur ouverture du fichier impossible");
+    }
+
+
     int point1 = 0, point2 = 0;
     saisieDijkstra(point1, point2);
     if(bfs(point1, point2))
     {
-        dijkstra(point1, point2);
+        dijkstra(point1, point2);   //Parcourt d'un chemin et calcul du temps de ce dernier pour les critères sélectionnés
     }
 }
 
 void Station::adminPanel(bool simple)
 {
-    lectureFichiers();
+    lectureFichiers();          //Re-lecture des dernières valeurs dans les fichiers
     bool fin = false;
 
     if(simple)
@@ -744,12 +763,8 @@ void Station::adminPanel(bool simple)
         resultat.push_back({"BUS",bus});
         while(!fin)
         {
-            fin = m_plan.pannelSimple(resultat);
+            fin = m_plan.pannelSimple(resultat);    //Attente de la sélection de l'administrateur pour l'ouverture et fermeture de certains types de trajets
         }
-
-        for(const auto& elem:resultat)
-            std::cout<<elem.first<<" : "<<elem.second<<std::endl;
-
         for(auto& elem: m_trajets)          //Permet d'ouvrir ou fermé certains types de trajets
         {
             if(elem.getType()=="B")
@@ -803,10 +818,10 @@ void Station::adminPanel(bool simple)
         int page = 1;
         while(!fin)
         {
-            fin = m_plan.pannelAdvance(m_trajets, page);
+            fin = m_plan.pannelAdvance(m_trajets, page);    //Attente de la sélection individuelle par trajet de l'administrateur pour leur ouverture/fermeture
         }
     }
-    reecritureFichiers();
+    reecritureFichiers();           //Sauvegarde sur les fichiers des nouvelles valeurs
 }
 
 void Station::lectureFichiers()
@@ -850,7 +865,7 @@ void Station::lectureFichiers()
             m_points[a].ajoutAnte(trj);
             trj.setActive(true);
         }
-        else
+        else                            //Activation ou désactivation des trajets
         {
             trj.setSelec(false);
             trj.setActive(false);
@@ -858,7 +873,7 @@ void Station::lectureFichiers()
         m_trajets.push_back(trj);
     }
     m_testAffichage = true;
-    m_affichageBfs = false;
+    m_affichageBfs = false;         //Variable de test d'affichage graphique
 }
 
 void Station::reecritureFichiers()
@@ -866,14 +881,14 @@ void Station::reecritureFichiers()
     std::ofstream fichier("data_arcs.txt");
     if(fichier)//ecriture du fichier data_arcs
     {
-        fichier << m_points.size()-1<< std::endl;//ligne 1 pseudo
+        fichier << m_points.size()-1<< std::endl;//ligne 1 : ordre du graphe
         for(unsigned int i = 1; i<m_points.size(); i++)
-        {
+        {   //Puis chaque point
             fichier << m_points[i].getNum() << "\t" << m_points[i].getLieu() << "\t" << m_points[i].getAlt() << "\t" << m_points[i].x() << "\t" << m_points[i].y() << std::endl;
         }
-        fichier << m_trajets.size() << std::endl;
+        fichier << m_trajets.size() << std::endl;   //puis la taille du graphe
         for(unsigned int i = 0; i<m_trajets.size(); i++)
-        {
+        {   //Puis chaque arc
             fichier << m_trajets[i].getNum() << "\t" << m_trajets[i].getNom() << "\t" << m_trajets[i].getType() << "\t" << m_trajets[i].getDepart() << "\t" << m_trajets[i].getArrivee() << "\t" << m_trajets[i].getActive() << std::endl;
         }
     }
@@ -885,5 +900,5 @@ void Station::reecritureFichiers()
 
 void Station::setAffBfs(bool aff)
 {
-    m_affichageBfs = aff;
+    m_affichageBfs = aff;       //Condition d'affichage graphique ou non du BFS
 }

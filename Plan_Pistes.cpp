@@ -21,8 +21,6 @@ Plan_Pistes::Plan_Pistes(){}
 Plan_Pistes::Plan_Pistes(std::string init)///Initialisation du mode graphique avec tout ses prérequis
 {
     ///Initialisation
-
-
     /// Lancer allegro et le mode graphique
     allegro_init();
     install_keyboard();
@@ -39,11 +37,6 @@ Plan_Pistes::Plan_Pistes(std::string init)///Initialisation du mode graphique av
 
     ///chargement des images
     m_background = load_bitmap_check("Graphics/Background.jpg");
-    m_panneau = load_bitmap_check("Graphics/Panneau2.jpg");
-
-    ///Lancement de la musique d'arrière plan
-    //m_musique = load_midi("Musique.mid");
-    //play_midi(m_musique, true);
 
     /// Allocation dynamique d'une structure BITMAP de 1600 par 900
     m_plan=create_bitmap(1600,900);
@@ -55,10 +48,6 @@ Plan_Pistes::~Plan_Pistes(){}
 void Plan_Pistes::setup()///affichage des éléments de base d'une partie
 {
     blit(m_background,m_plan,0,0,0,0,SCREEN_W,SCREEN_H);
-    //blit(m_panneau,m_plan,0,0,40,0,SCREEN_W,SCREEN_H);
-
-    //FONT *Font1 = load_font("Fonts/Font1.pcx",NULL,NULL);
-    //FONT *old = load_font("Fonts/Old.pcx",NULL,NULL);
     rectfill(m_plan, 20, 20, SCREEN_W-20, SCREEN_H-20, NOIR); //rectangle horizontal
     rectfill(m_plan, 30, 10, SCREEN_W-30, SCREEN_H-10, NOIR); //rectangle vertical
     circlefill(m_plan, SCREEN_W-35, 25, 15, NOIR);
@@ -108,7 +97,7 @@ void Plan_Pistes::afficher()///affichages des éléments du buffer
     blit(m_plan, screen, 0,0, x, y, m_plan->w, m_plan->h);
 }
 
-void Plan_Pistes::descripPistes()       //Décrit les
+void Plan_Pistes::descripPistes()       ///Affichage des légendes des pistes
 {
     std::vector<Trajet> traj;
     traj.push_back(Trajet(0, "", "V", 0, 0, 0, 0));
@@ -119,7 +108,7 @@ void Plan_Pistes::descripPistes()       //Décrit les
     traj.push_back(Trajet(0, "", "SURF", 0, 0, 0, 0));
 
     int x = SCREEN_W-275, y = 55;
-    for(const auto& elem:traj)
+    for(const auto& elem:traj)          //Affichages des type de pistes sur le coté
     {
         entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, false);
         y+=30;
@@ -135,7 +124,7 @@ void Plan_Pistes::descripPistes()       //Décrit les
     traj.push_back(Trajet(0, "", "TK", 0, 0, 0, 0));
     traj.push_back(Trajet(0, "", "BUS", 0, 0, 0, 0));
     y = 700;
-    for(const auto& elem:traj)
+    for(const auto& elem:traj)//Affichages des type de pistes sur le coté
     {
         entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, false);
         y+=32;
@@ -148,7 +137,6 @@ void Plan_Pistes::point(Point p)            //affichage d'un point sur le buffer
     FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
     circle(m_plan, x, y, 25, NOIR);
     textout_centre_ex(m_plan, old, std::to_string(p.getNum()).c_str(), x, y-15, NOIR, -1);
-    //afficher();
 }
 
 void Plan_Pistes::trajet(Trajet t, Point depart, Point arrivee, int compteur)   //affichage d'un arc sur le buffer
@@ -175,7 +163,7 @@ void Plan_Pistes::trajet(Trajet t, Point depart, Point arrivee, int compteur)   
 
 
     int delta = 25;
-
+    //Calcul des coordonées polaires -> cartésiennes de la position du debut/fin de l'arc sur le cercle du point
     int polaireX1 = delta * cos(compteur*M_PI/6);
     int polaireY1 = delta * sin(compteur*M_PI/6);
     int polaireX2 = delta * cos((compteur-1)*M_PI/4);
@@ -184,16 +172,12 @@ void Plan_Pistes::trajet(Trajet t, Point depart, Point arrivee, int compteur)   
     if(t.getSelec())
     {
         if(x1>x2 && y1>y2)
-            //line(m_plan, x1-delta-compteur, y1-delta-compteur, x2+delta-compteur, y2+delta-compteur, couleur);
             trait(type, x1-polaireX1, y1-polaireY1, x2+polaireX2, y2+polaireY2, couleur);
         else if(x1<x2 && y1>y2)
-            //line(m_plan, x1+delta-compteur, y1-delta-compteur, x2-delta-compteur, y2+delta-compteur, couleur);
             trait(type, x1+polaireX1, y1-polaireY1, x2-polaireX2, y2-polaireY2, couleur);
         else if(x1<x2 && y1<y2)
-            //line(m_plan, x1+delta-compteur, y1+delta-compteur, x2-delta-compteur, y2-delta-compteur, couleur);
             trait(type, x1+polaireX1, y1-polaireY1, x2-polaireX2, y2+polaireY2, couleur);
         else if(x1>x2 && y1<y2)
-            //line(m_plan, x1-delta+compteur, y1+delta+compteur, x2+delta+compteur, y2-delta+compteur, couleur);
             trait(type, x1-polaireX1, y1+polaireY1, x2+polaireX2, y2+polaireY2, couleur);
     }
 
@@ -208,7 +192,7 @@ void Plan_Pistes::trait(std::string type, int x1, int y1, int x2, int y2, int co
         line(m_plan, x1, y1, x2, y2, couleur);
         rectfill(m_plan, x2-2, y2-2, x2+2, y2+2, couleur);
     }
-    else if(type=="TSD"||type=="TS" || type=="TPH" || type=="TC" || type=="TK")
+    else if(type=="TSD"||type=="TS" || type=="TPH" || type=="TC" || type=="TK")     //Des traits avec des ronds pour les remontées mécaniques
     {
         line(m_plan, x1, y1, x2, y2, couleur);
         for(int i=15; i>0;i--)
@@ -227,7 +211,6 @@ Point Plan_Pistes::selecPoint(std::vector<Point> ensemble) const        //Permet
     {
         coords.push_back({elem.x(), elem.y()});
     }
-    //rect(m_plan, x-25, y-25, x+25, y+25, ROUGE);
 
     int x = 0;
     int y = 0;
@@ -251,20 +234,20 @@ Point Plan_Pistes::selecPoint(std::vector<Point> ensemble) const        //Permet
             if (x>=coords[i].first-25 && y>=coords[i].second-25 && x<=coords[i].first+25 && y<=coords[i].second+25)
             {
                 numero = i;
-                rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
+                rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);//Permet de tester l'endroit sélectionné
                 fin = true;
                 break;
             }
         }
     }
 
-    return ensemble[numero];
+    return ensemble[numero];//Retourne le point sélectionné
 }
 
 void Plan_Pistes::infoPoint(Point point)        //Affiche les information du point selectionner
 {
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
-    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
+    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL); //Chargement des polices
     FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
     effacer();
     setup();
@@ -281,16 +264,16 @@ void Plan_Pistes::infoPoint(Point point)        //Affiche les information du poi
 
     int x = 125;
     int y = 250;
-    for(const auto& elem:point.getAnte())
+    for(const auto& elem:point.getAnte())   //Affchages des trajets entrants
     {
-        entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true); ///TRIER LES ARETES SI YA LE TEMPS
+        entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true);
         std::string poids = cutDouble(elem.getPoids());
         textout_ex(m_plan, old,(elem.getNom() + " : " + poids + "mins").c_str(), x+285, y-17, SOUS_TITRE,-1);
         y+=75;
     }
     x = SCREEN_W-375;
     y = 250;
-    for(const auto& elem:point.getSuiv())
+    for(const auto& elem:point.getSuiv())//Affchages des trajets sortants
     {
         entreDeux(elem.getDepart(), elem.getArrivee(), elem.getType(), x, y, true);
         std::string poids = cutDouble(elem.getPoids());
@@ -301,17 +284,17 @@ void Plan_Pistes::infoPoint(Point point)        //Affiche les information du poi
     afficher();
 }
 
-void Plan_Pistes::infoTrajet(Trajet traj, std::vector<Point> points)
+void Plan_Pistes::infoTrajet(Trajet traj, std::vector<Point> points)///Affiche les informations sur le trajet rentré
 {
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
-    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
+    FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);//Polices
     effacer();
     setup();
     emphase("Informations sur le trajet", traj.getNom());
     rest(1200);
     setup();
     //Titre centré
-    std::string poids = cutDouble(traj.getPoids());
+    std::string poids = cutDouble(traj.getPoids()); //Simplification de la durée de parcours
     std::string sousTitre = std::to_string(traj.getNum()) + " : " + traj.getNom();
     textout_centre_ex(m_plan, MiddleTitle,"Informations sur le trajet", SCREEN_W/2,40, ROUGE_DOUX,-1);
     textout_centre_ex(m_plan, SubTitle,sousTitre.c_str(), SCREEN_W/2,120, SOUS_TITRE,-1);
@@ -319,12 +302,25 @@ void Plan_Pistes::infoTrajet(Trajet traj, std::vector<Point> points)
     std::string info1 = "Vous etes sur le trajet " + std::to_string(traj.getNum()) + " : " + traj.getNom();
     std::string info2 = "C'est un(e) " + longType(traj.getType()) + " qui relie les points " + points[traj.getDepart()].getLieu() + " et " + points[traj.getArrivee()].getLieu() + ".";
     std::string info3 = "La duree moyenne de ce trajet est de " + poids + " minutes.";
+    std::string etat = "ouvert";
+    if(!traj.getActive())
+    {
+        etat = "ferme";
+        std::string info4 = "Ce trajet est actuellement " + etat + ".";
+        textout_centre_ex(m_plan, SubTitle,info4.c_str(), SCREEN_W/2, SCREEN_H/2+100, ROUGE,-1);        //Indication de l'ouverture ou la fermeture du trajet actuellement sélectionné
+    }
+    else
+    {
+        std::string info4 = "Ce trajet est actuellement " + etat + ".";
+        textout_centre_ex(m_plan, SubTitle,info4.c_str(), SCREEN_W/2, SCREEN_H/2+100, VERT_FONCE,-1);   //Indication de l'ouverture ou la fermeture du trajet actuellement sélectionné
+    }
+
     textout_centre_ex(m_plan, SubTitle,info1.c_str(), SCREEN_W/2, SCREEN_H/2-50, SOUS_TITRE,-1);
     textout_centre_ex(m_plan, SubTitle,info2.c_str(), SCREEN_W/2, SCREEN_H/2, SOUS_TITRE,-1);
     textout_centre_ex(m_plan, SubTitle,info3.c_str(), SCREEN_W/2, SCREEN_H/2+50, SOUS_TITRE,-1);
 }
 
-void Plan_Pistes::entreDeux(int depart, int arrivee, std::string type, int x, int y, bool point)
+void Plan_Pistes::entreDeux(int depart, int arrivee, std::string type, int x, int y, bool point)///Affichage plus complet d'un trajet avec son type et ses points de départ et d'arrivée ou non, employé pour certains menus d'inforamtions
 {
     FONT *old = load_font("Fonts/regles.pcx",NULL,NULL);
     int couleur = 0;
@@ -354,7 +350,7 @@ void Plan_Pistes::entreDeux(int depart, int arrivee, std::string type, int x, in
 }
 
 std::string Plan_Pistes::longType(std::string type) const
-{
+{///renvoie la version longue du nom du type de trajet envoyé en paramètres
     std::string typeLong;
     if(type=="V") typeLong = "Piste Verte";
     else if(type=="B") typeLong = "Piste Bleue";
@@ -372,7 +368,7 @@ std::string Plan_Pistes::longType(std::string type) const
 }
 
 std::string Plan_Pistes::cutDouble(double nombre)
-{
+{///Permet de simplifier les variable de type double pour les affichages
     std::string poids = std::to_string(nombre);
     poids.erase(poids.find_last_not_of('0')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
     poids.erase(poids.find_last_not_of('.')+1, std::string::npos); //https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
@@ -381,7 +377,7 @@ std::string Plan_Pistes::cutDouble(double nombre)
 
 
 bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
-{
+{///Permet à l'utilisateur de faire une sélection des types de trajets qu'il désire emprunter
     //Polices utilisées
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
@@ -399,7 +395,7 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
     std::string texte = "";
     int x = 120, y = 320;
     unsigned int i = 0;
-    for(const auto& elem:connex)
+    for(const auto& elem:connex)//Affichage des types de trajets et des boutons de sélection
     {
         if(i==connex.size()/2)
         {
@@ -408,17 +404,17 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
         }
         entreDeux(1, 2, elem.first, x, y, true);
         int x2 = x+400;
-        if(elem.second == 0)
+        if(elem.second == 0)//Si actif
         {
             couleur = VERT_FONCE;
             texte = "AVEC";
         }
-        else if(elem.second == 1)
+        else if(elem.second == 1)//Si à éviter
         {
             couleur = makecol(255, 127, 39);
             texte = "EVITER";
         }
-        else if(elem.second == 2)
+        else if(elem.second == 2)//Si inactif
         {
             couleur = ROUGE;
             texte = "SANS";
@@ -448,10 +444,10 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
                 clic = true;
             }
         }
-        for(unsigned int i = 0; i<coords.size(); i++)
+        for(unsigned int i = 0; i<coords.size(); i++)//
         {
             if (xSouris>=coords[i].first-100 && ySouris>=coords[i].second-25 && xSouris<=coords[i].first+100 && ySouris<=coords[i].second+25)
-            {
+            {//Si l'utilisateur clique sur un des boutons
                 rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
                 connex[i].second++;
                 if(connex[i].second == 3)
@@ -460,7 +456,7 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
                 break;
             }
             if ( mouse_b&1 && mouse_x>=SCREEN_W/2-50 && mouse_y>=SCREEN_H-50 && mouse_x<=SCREEN_W/2+50 &&mouse_y<=SCREEN_H && !fin)
-            {
+            {//Si confirmer est cliqué
                 fin=true;
                 quitter = true;
                 break;
@@ -472,7 +468,7 @@ bool Plan_Pistes::personnalise(std::vector<std::pair<std::string,int>>& connex)
 }
 
 bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
-{
+{///Panneau de sélection de l'administrateur pour l'ouverture ou la fermeture des trajets par types
     //Polices utilisées
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
@@ -540,12 +536,12 @@ bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
                 rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
                 if(connex[i].second == true)
                     connex[i].second = false;
-                else connex[i].second = true;
+                else connex[i].second = true;//Basculement de létat du bouton cliqué
                 fin = true;
                 break;
             }
             if ( mouse_b&1 && mouse_x>=SCREEN_W/2-50 && mouse_y>=SCREEN_H-50 && mouse_x<=SCREEN_W/2+50 &&mouse_y<=SCREEN_H && !fin)
-            {
+            {//Si confirmer est cliqué
                 fin=true;
                 quitter = true;
                 break;
@@ -557,7 +553,7 @@ bool Plan_Pistes::pannelSimple(std::vector<std::pair<std::string,bool>>& connex)
 }
 
 bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
-{
+{///Panneau de sélection de l'administrateur pour l'ouverture ou la fermeture des trajets individuellement
     //Polices utilisées
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
     FONT *SubTitle = load_font("Fonts/SubTitle.pcx",NULL,NULL);
@@ -634,7 +630,7 @@ bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
             if (xSouris>=coords[i].first-100 && ySouris>=coords[i].second-25 && xSouris<=coords[i].first+100 && ySouris<=coords[i].second+25)
             {
                 rect(m_plan, coords[i].first-25, coords[i].second-25, coords[i].first+25, coords[i].second+25, ROUGE);
-                if(trajets[i].getActive() == true)
+                if(trajets[i].getActive() == true)//Basculement de létat du bouton cliqué
                     trajets[i].setActive(false);
                 else trajets[i].setActive(true);
                 fin = true;
@@ -642,19 +638,19 @@ bool Plan_Pistes::pannelAdvance(std::vector<Trajet>& trajets, int& page)
             }
             if ( mouse_b&1 && mouse_x>=27.5 && mouse_y>=SCREEN_H-70 && mouse_x<=185 &&mouse_y<=SCREEN_H-25 && !fin && page>1)
             {
-                fin=true;
+                fin=true;//Bouton page précédente
                 page--;
                 break;
             }
             if ( mouse_b&1 && mouse_x>=SCREEN_W-160 && mouse_y>=SCREEN_H-70 && mouse_x<=SCREEN_W-27.5 &&mouse_y<=SCREEN_H-25 && !fin && page<7)
             {
-                fin=true;
+                fin=true;//Bouton page suivante
                 page++;
                 break;
             }
             if ( mouse_b&1 && mouse_x>=SCREEN_W/2-50 && mouse_y>=SCREEN_H-50 && mouse_x<=SCREEN_W/2+50 &&mouse_y<=SCREEN_H && !fin)
             {
-                fin=true;
+                fin=true;//Si confirmer est cliqué
                 quitter = true;
                 break;
             }
@@ -858,7 +854,7 @@ void Plan_Pistes::regles(std::vector<std::string> regles)//affichage des règles 
 }
 
 
-int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l'utilisateur sur une des options proposées
+int Plan_Pistes::menuPrincipal()///Menu principal de l'application, attendant un clic de l'utilisateur sur une des options proposées
 {
     effacer();
     //Chargement des images
@@ -872,7 +868,7 @@ int Plan_Pistes::menuPrincipal()///Menu principal du jeu, attendant un clic de l
     FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
 
-    //Affichage du titre du jeu
+    //Affichage du titre de l'application
     textout_centre_ex(m_plan, MainTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
 
     std::vector<std::string> propositions;//Ajout des choix à afficher
@@ -980,7 +976,7 @@ int Plan_Pistes::menuExtras()///Menu des extensions de l'application, attendant 
     FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
 
-    //Affichage du titre du jeu
+    //Affichage du titre de l'application
     textout_centre_ex(m_plan, MainTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
 
     std::vector<std::string> propositions;//Ajout des choix à afficher
@@ -1009,7 +1005,7 @@ int Plan_Pistes::menuExtras()///Menu des extensions de l'application, attendant 
         }
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+145 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+225)
         {
-            choix = 2;//Affichage des 7 meilleurs joueurs du jeu
+            choix = 2;//Affichage des 7 meilleurs joueurs de l'application
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+140,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+140,SCREEN_W,SCREEN_H);
             afficher();
@@ -1043,7 +1039,7 @@ int Plan_Pistes::menuPersonalisation()///Menu de personalisation des trajets pro
     FONT *MainTitle = load_font("Fonts/MainTitle.pcx",NULL,NULL);
     FONT *MiddleTitle = load_font("Fonts/MiddleTitle.pcx",NULL,NULL);
 
-    //Affichage du titre du jeu
+    //Affichage du titre de l'application
     textout_centre_ex(m_plan, MainTitle,"TOUCHOUSSE", SCREEN_W/2,SCREEN_H/4-75, ROUGE_DOUX,-1);
 
     std::vector<std::string> propositions;//Ajout des choix à afficher
@@ -1072,7 +1068,7 @@ int Plan_Pistes::menuPersonalisation()///Menu de personalisation des trajets pro
         }
         if ( mouse_b&1 && mouse_x>=SCREEN_W/2-350 && mouse_y>=SCREEN_H/4+145 && mouse_x<=SCREEN_W/2+350 &&mouse_y<=SCREEN_H/4+225)
         {
-            choix = 2;//Affichage des 7 meilleurs joueurs du jeu
+            choix = 2;//Affichage des 7 meilleurs joueurs de l'application
             masked_blit(arrow1,m_plan,0,0,SCREEN_W/2-400,SCREEN_H/4+140,SCREEN_W,SCREEN_H);//flèches accentuant la sélection de l'utilisateur
             masked_blit(arrow2,m_plan,0,0,SCREEN_W/2+320,SCREEN_H/4+140,SCREEN_W,SCREEN_H);
             afficher();

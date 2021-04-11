@@ -34,7 +34,7 @@ public:
     void adminPanel(bool simple);               //Méthode pour gérer le panneau administrateur
     void lectureFichiers();                     //Ouvre et lis le fichier des points et trajets de la station
     void reecritureFichiers();                  //Modifie le fichier des points et trajets de la station
-    void setAffBfs(bool aff);
+    void setAffBfs(bool aff);                   //Condition d'affichage graphique ou non du BFS
 
 };
 

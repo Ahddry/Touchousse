@@ -17,7 +17,7 @@ private:
     int m_altDepart;    //Altitude du point de départ
     int m_altArrivee;   //Altitude du point d'arrivée
     bool m_selectionable;    //Choix de si l'arc est selectionnable ou non vis-à-vis des paramètres actuels de l'utilisateur
-    bool m_active;         //Choix de si l'arc est interdit à l'ouverture du fichier
+    bool m_active;         //Choix de si l'arc est actif à l'ouverture du fichier
 
 public:
     Trajet(int num, std::string nom, std::string type, int depart, int arrivee, int altDe, int altAr);
