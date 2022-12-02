@@ -19,14 +19,14 @@
 	"Point.h"
 	<set>
 
-1618136439 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\plan_pistes.cpp
+1618555866 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\plan_pistes.cpp
 	"Plan_Pistes.h"
 	"time.h"
 	<ctime>
-	"math.h"
+	<math.h>
 	<iostream>
 
-1618136439 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\station.cpp
+1618475811 source:c:\users\blair\onedrive\documents\travail\théorie des graphes\projet\touchousse\station.cpp
 	"Station.h"
 	<queue>
 	<fstream>
@@ -136,4 +136,73 @@
 	<fstream>
 	<string>
 	<iostream>
+
+1617915160 source:c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\administrateurs.cpp
+	"Administrateurs.h"
+	<fstream>
+	<string>
+	<iostream>
+
+1617915160 c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\administrateurs.h
+	"Plan_Pistes.h"
+	<vector>
+
+1618076159 c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\plan_pistes.h
+	"Point.h"
+	<vector>
+	<allegro.h>
+	<png.h>
+	<loadpng.h>
+	<jpgalleg.h>
+	<time.h>
+	<string>
+
+1617804812 c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\point.h
+	"Trajet.h"
+	<vector>
+
+1618073978 c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\trajet.h
+	<string>
+
+1618072454 source:c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\main.cpp
+	<iostream>
+	"Plan_Pistes.h"
+	"Menus.h"
+
+1617912325 c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\menus.h
+	"Administrateurs.h"
+	"Station.h"
+
+1618073978 c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\station.h
+	"Plan_Pistes.h"
+	"Point.h"
+	<set>
+
+1618072354 source:c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\menus.cpp
+	"Menus.h"
+	<fstream>
+	<iostream>
+
+1666435816 source:c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\plan_pistes.cpp
+	"Plan_Pistes.h"
+	"time.h"
+	<ctime>
+	<math.h>
+	<iostream>
+
+1617921735 source:c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\point.cpp
+	"Point.h"
+	<climits>
+	<iostream>
+
+1618475811 source:c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\station.cpp
+	"Station.h"
+	<queue>
+	<fstream>
+	<iostream>
+	<algorithm>
+	<utility>
+
+1618072354 source:c:\users\blair\onedrive\documents\travail\anciens semestres\ing2\semestre 2\théorie des graphes\projet\touchousse\trajet.cpp
+	"Trajet.h"
 

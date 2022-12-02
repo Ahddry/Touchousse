@@ -516,8 +516,8 @@ void Station::saisieDijkstra(int& point1, int& point2)
     do          //Saisie sécurisée du point de départ
     {
         point1 = atoi(m_plan.saisie("Ou vous trouvez-vous ?", "Veuillez saisir le numero de depart :").c_str());
-        if(point1<=0){m_plan.erreur("La location n'existe pas");}
-        if(point1>37){m_plan.erreur("La location n'existe pas");}
+        if(point1<=0){m_plan.erreur("La localisation n'existe pas");}
+        if(point1>37){m_plan.erreur("La localisation n'existe pas");}
     }while(point1<=0||point1>37);
 
     m_plan.effacer();

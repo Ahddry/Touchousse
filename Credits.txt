@@ -3,17 +3,17 @@ Credits :
 Createurs :
 Adrie BLAIR, Cyril HAUBOIS
 
-Sources de codes importes: 
-Les TDs realises au cours du semestre en theorie des graphes pour les algorithmes employes.
-Notre precedant projet pour la plupart des fonctions allegro
+Sources de codes importes:
+Les TD realises au cours du semestre en theorie des graphes pour les algorithmes employes.
+Notre precedant projet pour la plupart des fonctions allegro et pour les connexions aux comptes.
 M. Fercoq et son site, pour tous les exemples et tutoriels allegro :
-https://fercoq.bitbucket.io/allegro/index.html 
+https://fercoq.bitbucket.io/allegro/index.html
 Cpp reference et cplusplus.com, pour les fonctions non-usuelles en langage C++, notamment la fonction
 Text de la classe Plan_Pistes, utilisant les subset pour separer des string qui vient integralement du site :
 http://www.cplusplus.com/reference/string/string/substr/
 Stackoverflow et ses auteurs pour certaines corrections d'erreurs inconnues, ainsi
-que pour la fonction de simplification de 0 apres le virgule des doubles, utilisee dans les affichages : 
-//https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+que pour la fonction de simplification de 0 apres le virgule des doubles, utilisee dans les affichages :
+https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
 
-Images : 
+Images :
 Les images stocks de Microsoft Office, freepng.fr et autres images libres de droits.

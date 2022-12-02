@@ -1,7 +1,7 @@
 #include "Plan_Pistes.h"
 #include "time.h"
 #include <ctime>
-#include "math.h"
+#include <math.h>
 #include <iostream>
 
 #define ROUGE makecol(255,0,0)
@@ -14,6 +14,8 @@
 #define VERT_FONCE makecol(14, 209, 69)
 #define SOUS_TITRE makecol(112,146,190)
 #define MONTAGNE makecol(200,210,220)
+
+#define PI 3.141592653589
 
 
 Plan_Pistes::Plan_Pistes(){}
@@ -28,6 +30,8 @@ Plan_Pistes::Plan_Pistes(std::string init)///Initialisation du mode graphique av
     register_png_file_type();
     jpgalleg_init();
     set_color_depth(desktop_color_depth());
+    //if (set_gfx_mode(GFX_AUTODETECT, 1600, 900,0,0)!=0)
+    ///EN CAS DE CRASH AU LANCEMENT : décommenter la ligne 31 et commenter la ligne 33. Ceci est un problème lié à Allegro sur les écrans à trop petites résolution. Cela aura pour effet de mettre l'application en plein écran et de potentielement déformer les positions de certains objets affichés.
     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,1600,900,0,0)!=0)
     {
         allegro_message("prb gfx mode");
@@ -164,10 +168,10 @@ void Plan_Pistes::trajet(Trajet t, Point depart, Point arrivee, int compteur)   
 
     int delta = 25;
     //Calcul des coordonées polaires -> cartésiennes de la position du debut/fin de l'arc sur le cercle du point
-    int polaireX1 = delta * cos(compteur*M_PI/6);
-    int polaireY1 = delta * sin(compteur*M_PI/6);
-    int polaireX2 = delta * cos((compteur-1)*M_PI/4);
-    int polaireY2 = delta * sin((compteur-1)*M_PI/4);
+    int polaireX1 = delta * cos(compteur*PI/6);
+    int polaireY1 = delta * sin(compteur*PI/6);
+    int polaireX2 = delta * cos((compteur-1)*PI/4);
+    int polaireY2 = delta * sin((compteur-1)*PI/4);
 
     if(t.getSelec())
     {
