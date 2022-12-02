@@ -66,3 +66,5 @@ Ce projet est sous licence MIT.
 
 ![Plan des pistes - Touchousse](Image/touchousse2.jpg)
 ![Panneau d'administration - Touchousse](Image/touchousse3.jpg)
+
+> En cas de problème de lancement de l'application et que celle-ci retourne le message d'erreur "prb gfx mode", commenter la ligne 35 de Plan_Pistes.cpp et retirer la marque de commentaire sur la 33. Cela aura pour effet de mettre l'application en plein écran et de potentielement déformer les positions de certains objets affichés. Ceci est un problème lié à allegro, qui a principalement effet lorsque l'application est lancé sur un écran avec une résolution trop basse.
